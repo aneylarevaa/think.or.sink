@@ -1,5 +1,5 @@
 // Ganti URL di bawah ini dengan URL API Google Apps Script kamu nanti
-const API_URL = "URL_GOOGLE_APPS_SCRIPT_KAMU_DISINI";
+const API_URL = "https://script.google.com/macros/s/AKfycbx01CyqyhXNeFp7NHk6_Ntm5_5BcOvIBJqxI6lEjSsLVSCqaQm_GzejgwihrlPPtBit/exec";
 
 let questions = [];
 let currentQuestionIndex = 0;
