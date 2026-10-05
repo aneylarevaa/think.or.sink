@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Think or Sink - Game Edukasi</title>
+    <title>Think or Sink - Interactive Game</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
     <style>
         * {
@@ -23,6 +23,7 @@
             overflow: hidden;
         }
 
+        /* CONTAINER UTAMA GAME */
         #game-container {
             position: relative;
             width: 1000px;
@@ -33,6 +34,80 @@
             border-radius: 14px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.6);
             overflow: hidden;
+        }
+
+        /* LOGO LUCU DI POJOK KIRI ATAS GAME */
+        #game-logo {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #fffae5;
+            background: rgba(40, 54, 24, 0.85);
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 2px solid #dda15e;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            z-index: 20;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* LANDING PAGE / MENU UTAMA (AWAL BUKA WEB) */
+        #main-menu {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(7, 11, 25, 0.85);
+            backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 30;
+            transition: opacity 0.4s ease;
+        }
+
+        .menu-title {
+            font-family: 'Nunito', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: #fffae5;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .menu-subtitle {
+            font-size: 1rem;
+            color: #dda15e;
+            font-weight: 700;
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .play-btn {
+            font-family: 'Nunito', sans-serif;
+            background-color: #dda15e;
+            color: #283618;
+            border: none;
+            padding: 12px 35px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+            transition: all 0.2s ease;
+        }
+
+        .play-btn:hover {
+            background-color: #fceade;
+            color: #bc6c25;
+            transform: scale(1.08);
         }
 
         /* ELEMEN JEMBATAN DI TENGAH SUNGAI */
@@ -55,7 +130,7 @@
             animation: popIn 0.3s ease-out forwards;
         }
 
-        /* Papan Kayu Atas (Soal) */
+        /* PAPAN KAYU ATAS (SOAL) */
         #wooden-sign {
             position: absolute;
             top: 35px;
@@ -81,7 +156,7 @@
             line-height: 1.3;
         }
 
-        /* Kertas Gulungan Bawah (Opsi Jawaban) */
+        /* KERTAS GULUNGAN BAWAH (OPSI JAWABAN) */
         #scroll-options {
             position: absolute;
             top: 165px;
@@ -148,18 +223,28 @@
 <body>
 
     <div id="game-container">
+        <!-- Logo Lucu di Pojok Kiri Atas -->
+        <div id="game-logo">Think or Sink 🪵</div>
+
+        <!-- Landing Page / Menu Utama (Muncul Pertama Kali) -->
+        <div id="main-menu">
+            <h1 class="menu-title">Think or Sink</h1>
+            <p class="menu-subtitle">Test your knowledge before the bridge collapses!</p>
+            <button class="play-btn" onclick="startGame()">PLAY</button>
+        </div>
+
         <!-- Gambar Jembatan (Berubah tiap salah jawab) -->
-        <img id="bridge-img" src="bridge-1.png" alt="Jembatan">
+        <img id="bridge-img" src="bridge-1.png" alt="Bridge">
 
         <div id="wooden-sign" class="animate-board">
-            <div id="question-text">Memuat soal dari SheetDB...</div>
+            <div id="question-text">Loading questions from SheetDB...</div>
         </div>
         <div id="scroll-options" class="animate-board"></div>
     </div>
 
     <div id="controls">
-        <div id="status-msg">Status: Menghubungkan ke SheetDB...</div>
-        <button class="reset-btn" onclick="initGame()">Muat Ulang Game</button>
+        <div id="status-msg">Status: Ready to play!</div>
+        <button class="reset-btn" onclick="initGame()">Restart Game</button>
     </div>
 
     <script>
@@ -174,9 +259,20 @@
         const scrollOptions = document.getElementById("scroll-options");
         const statusMsg = document.getElementById("status-msg");
         const bridgeImg = document.getElementById("bridge-img");
+        const mainMenu = document.getElementById("main-menu");
+
+        async function startGame() {
+            // Sembunyikan menu utama dengan efek mulus
+            mainMenu.style.opacity = "0";
+            setTimeout(() => {
+                mainMenu.style.display = "none";
+            }, 400);
+
+            await initGame();
+        }
 
         async function initGame() {
-            statusMsg.innerText = "Mengambil data soal dari SheetDB...";
+            statusMsg.innerText = "Fetching questions from SheetDB...";
             currentIndex = 0;
             wrongAttempts = 0;
             updateBridgeImage();
@@ -193,22 +289,22 @@
 
                 if (questions.length > 0) {
                     loadQuestion();
-                    statusMsg.innerText = "Status: Silakan jawab pertanyaan di atas!";
+                    statusMsg.innerText = "Status: Answer the question above!";
                 } else {
-                    questionText.innerText = "Tidak ada soal ditemukan di SheetDB.";
+                    questionText.innerText = "No questions found in SheetDB.";
                 }
             } catch (error) {
-                console.error("Gagal memuat API SheetDB:", error);
-                statusMsg.innerText = "⚠ Gagal memuat data dari SheetDB. Periksa koneksi/nama kolom.";
+                console.error("Failed to load SheetDB API:", error);
+                statusMsg.innerText = "⚠ Failed to load data. Please check connection or column names.";
             }
         }
 
         function loadQuestion() {
             if (currentIndex >= questions.length) {
                 triggerTransition();
-                questionText.innerText = "🎉 Luar Biasa! Kamu berhasil menyelesaikan semua pertanyaan!";
-                scrollOptions.innerHTML = `<button class="option-btn" onclick="initGame()">Mainkan Lagi Dari Awal</button>`;
-                statusMsg.innerText = "Status: Selesai!";
+                questionText.innerText = "🎉 Amazing! You successfully answered all questions!";
+                scrollOptions.innerHTML = `<button class="option-btn" onclick="initGame()">Play Again</button>`;
+                statusMsg.innerText = "Status: Completed!";
                 return;
             }
 
@@ -252,7 +348,7 @@
 
             if (isCorrect) {
                 currentIndex++;
-                statusMsg.innerText = "✨ Benar! Jembatan aman, lanjut ke soal berikutnya...";
+                statusMsg.innerText = "✨ Correct! Bridge is safe, moving to next question...";
                 setTimeout(() => loadQuestion(), 500);
             } else {
                 wrongAttempts++;
@@ -260,16 +356,14 @@
 
                 if (wrongAttempts >= 3) {
                     triggerTransition();
-                    questionText.innerText = "💥 Oh tidak! Jembatan keburu roboh karena terlalu banyak salah jawab!";
-                    scrollOptions.innerHTML = `<button class="option-btn" onclick="initGame()">Coba Lagi Dari Awal</button>`;
+                    questionText.innerText = "💥 Oh no! The bridge collapsed due to too many mistakes!";
+                    scrollOptions.innerHTML = `<button class="option-btn" onclick="initGame()">Try Again</button>`;
                     statusMsg.innerText = "Status: Game Over!";
                 } else {
-                    statusMsg.innerText = `❌ Kurang tepat! Jembatan mulai rusak (Kesalahan ke-${wrongAttempts}/3)`;
+                    statusMsg.innerText = `❌ Incorrect! Bridge is breaking (Mistake ${wrongAttempts}/3)`;
                 }
             }
         }
-
-        window.onload = initGame;
     </script>
 </body>
 </html>
