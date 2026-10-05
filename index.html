@@ -1,36 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Think or Sink</title>
-    <!-- Tambahkan baris link font ini di dalam head -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Lexend:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="game-container">
-        <!-- Papan Kayu Atas: Tempat Soal -->
-        <div id="top-sign">
-            <p id="question-text">Loading questions from spreadsheet...</p>
-        </div>
+    <div id="game-container">
+        <!-- Area Jembatan & Karakter yang beranimasi -->
+        <div id="bridge-area" class="stage-0">
+            <!-- Elemen Jembatan (bisa berupa gambar/div asset Canva kamu) -->
+            <div class="bridge-structure"></div>
+            
+            <!-- Karakter -->
+            <div id="character"></div>
 
-        <!-- Area Utama (Jembatan di kiri, Area Opsi Perkamen di kanan) -->
-        <div id="game-scene">
-            <!-- Jembatan dan Karakter -->
-            <div id="bridge-area" class="stage-0">
-                <div id="character">🧍</div>
-            </div>
-
-            <!-- Area Kanan (Perkamen untuk 4 Opsi Jawaban) -->
-            <div id="paper-area">
-                <div id="options-container">
-                    <!-- 4 Tombol Pilihan Ganda akan digenerate otomatis -->
-                </div>
-                <button id="restart-btn" style="display:none;">Play Again</button>
-            </div>
+            <!-- Efek Cipratan Air saat jatuh di stage 3 -->
+            <div id="splash-effect"></div>
         </div>
+    </div>
+
+    <!-- Kotak Pertanyaan & Opsi -->
+    <div id="quiz-container">
+        <div id="question-text">Memuat pertanyaan...</div>
+        <div id="options-container"></div>
+        <button id="restart-btn" style="display: none;">Coba Lagi</button>
     </div>
 
     <script src="script.js"></script>
