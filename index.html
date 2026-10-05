@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Think or Sink - Custom Adventure Edition</title>
-    <!-- Google Fonts -->
+    <title>Think or Sink - Animated Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
     <style>
         * {
@@ -15,7 +14,7 @@
 
         body {
             font-family: 'Quicksand', sans-serif;
-            background-color: #0b132b;
+            background-color: #070b19;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -24,264 +23,132 @@
             overflow: hidden;
         }
 
-        /* --- KANVAS UTAMA (MENGIKUTI REFERENSI PERSIS) --- */
+        /* CONTAINER UTAMA GAME */
         #game-container {
             position: relative;
             width: 1000px;
             height: 562px;
-            background: linear-gradient(180deg, #bce1f0 0%, #d8edf5 60%, #eef6f9 100%);
-            border: 5px solid #283618;
-            border-radius: 18px;
+            /* Ganti 'background-river.jpg' dengan nama file gambar pemandangan kamu */
+            background: url('background-river.jpg') no-repeat center center;
+            background-size: cover;
+            border: 4px solid #283618;
+            border-radius: 14px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
             overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
 
-        /* 1. ELEMEN LATAR BELAKANG: LANGIT & AWAN */
-        .sky-bg {
+        /* ================= ANIMASI AWAN BERGERAK ================= */
+        .moving-clouds {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+            width: 200%;
+            height: 40%;
+            /* Gunakan gambar overlay awan transparan atau efek gradasi bergerak */
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            animation: driftClouds 25s linear infinite;
+            pointer-events: none;
+            z-index: 2;
         }
 
-        /* 2. AREA KIRI: SUNGAI & JEMBATAN GANTUNG */
-        .river-area {
+        @keyframes driftClouds {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0%); }
+        }
+
+        /* ================= ANIMASI AIR MENGIKUTI ARUS ================= */
+        .flowing-water {
             position: absolute;
+            /* Sesuaikan posisi area sungai berdasarkan gambarmu */
             bottom: 0;
             left: 0;
-            width: 48%;
-            height: 220px;
-            background: linear-gradient(180deg, #70c1b3 0%, #247ba0 100%);
-            z-index: 2;
-            border-top: 4px solid #52b788;
-        }
-        
-        /* Batu Sungai */
-        .river-rock {
-            position: absolute;
-            bottom: 30px;
-            left: 170px;
-            width: 90px;
-            height: 45px;
-            background: #3a5a40;
-            border-radius: 50%;
-            z-index: 3;
-            box-shadow: inset -5px -5px 0px rgba(0,0,0,0.3);
-        }
-
-        /* Jembatan Gantung Interaktif */
-        #bridge-wrapper {
-            position: absolute;
-            bottom: 50px;
-            left: 20px;
-            width: 250px;
-            height: 100px;
-            z-index: 4;
-            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-            transform-origin: left bottom;
-        }
-        .bridge-planks {
-            position: absolute;
-            bottom: 0;
             width: 100%;
-            height: 35px;
-            background: #8c5830;
-            border-radius: 6px;
-            border-top: 4px solid #b07d62;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
-        }
-        .bridge-ropes {
-            position: absolute;
-            top: -20px;
-            width: 100%;
-            height: 50px;
-            border-top: 4px dashed #5c4033;
-            border-radius: 50% 50% 0 0;
-        }
-        .bridge-pole {
-            position: absolute;
-            bottom: 0;
-            width: 12px;
-            height: 90px;
-            background: #5c4033;
-            border-radius: 3px;
-        }
-        .bp-left { left: 10px; }
-        .bp-right { right: 10px; }
-
-        /* Pohon Kelapa / Tropis Kiri */
-        .palm-cluster-left {
-            position: absolute;
-            bottom: 120px;
-            left: 180px;
-            width: 140px;
-            height: 160px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,100 L50,40 Q30,20 10,10 Q40,30 50,40 Q70,20 90,5 Q60,30 50,40 Z" fill="%232d6a4f"/><path d="M45,100 L45,45 Q20,35 0,30 Q35,40 45,45 Q70,35 95,20 Q60,40 45,45 Z" fill="%2340916c"/></svg>') no-repeat;
-            background-size: contain;
+            height: 45%;
+            /* Efek kilau air bergeser / riak */
+            background: radial-gradient(ellipse at center, rgba(255,255,255,0.25) 0%, rgba(0,0,0,0) 70%);
+            background-size: 200px 100px;
+            animation: flowRiver 4s linear infinite;
+            pointer-events: none;
             z-index: 2;
+            mix-blend-mode: overlay;
         }
 
-        /* 3. AREA KANAN: CANDI / RELIEF & GULUNGAN KERTAS */
-        .temple-structure {
-            position: absolute;
-            bottom: 70px;
-            right: 40px;
-            width: 110px;
-            height: 180px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 160"><rect x="30" y="10" width="40" height="150" fill="%23584033"/><polygon points="20,20 50,0 80,20" fill="%2338220f"/><polygon points="25,50 50,30 75,50" fill="%2338220f"/><polygon points="30,80 50,60 70,80" fill="%2338220f"/><rect x="40" y="110" width="20" height="50" fill="%231f1309"/></svg>') no-repeat;
-            background-size: contain;
-            z-index: 3;
+        @keyframes flowRiver {
+            0% { background-position: 0 0; }
+            100% { background-position: -200px 0; }
         }
 
-        /* Gulungan Kertas / Scroll Tengah (Tempat Opsi Jawaban) */
-        #scroll-parchment {
-            position: absolute;
-            top: 130px;
-            right: 170px;
-            width: 480px;
-            height: 380px;
-            background: #f4ecdc;
-            border: 3px dashed #b08968;
-            border-radius: 12px;
-            padding: 30px 25px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.25);
-            z-index: 5;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        /* Efek gerigi pinggir kertas */
-        #scroll-parchment::before {
-            content: '';
-            position: absolute;
-            top: -6px; left: 10px; right: 10px; height: 6px;
-            background: radial-gradient(circle, #f4ecdc 40%, transparent 41%);
-            background-size: 15px 15px;
-        }
-
-        /* 4. PAPAN KAYU UTAMA DI ATAS (Tempat Soal) */
+        /* PAPAN KAYU ATAS (SOAL) */
         #wooden-sign {
             position: absolute;
-            top: 20px;
-            left: 50%;
+            top: 45px;
+            left: 56%;
             transform: translateX(-50%);
-            width: 650px;
-            height: 95px;
-            background: linear-gradient(135deg, #a66321 0%, #7f4f24 100%);
-            border: 4px solid #3d2314;
-            border-radius: 14px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-            z-index: 20;
+            width: 440px;
+            height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 30px;
+            padding: 0 20px;
             text-align: center;
+            z-index: 10;
         }
-        /* Tali Pengikat Papan Kayu */
-        .sign-rope-left, .sign-rope-right {
-            position: absolute;
-            top: -20px;
-            width: 10px;
-            height: 30px;
-            background: #d4a373;
-            border: 2px solid #3d2314;
-            border-radius: 4px;
-        }
-        .sign-rope-left { left: 60px; }
-        .sign-rope-right { right: 60px; }
-
         #question-text {
             color: #fffae5;
             font-family: 'Nunito', sans-serif;
-            font-size: 1.05rem;
+            font-size: 0.95rem;
             font-weight: 900;
-            text-shadow: 2px 2px 3px rgba(0,0,0,0.6);
+            text-shadow: 2px 2px 3px rgba(0,0,0,0.7);
+            line-height: 1.3;
         }
 
-        /* 5. TOMBOL OPSI JAWABAN */
+        /* GULUNGAN KERTAS TENGAH (OPSI JAWABAN) */
+        #scroll-options {
+            position: absolute;
+            top: 200px;
+            left: 425px;
+            width: 480px;
+            height: 290px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 8px;
+            z-index: 10;
+        }
+
         .option-btn {
             font-family: 'Quicksand', sans-serif;
-            background-color: #dda15e;
-            color: #283618;
-            border: 2px solid #bc6c25;
-            padding: 11px 16px;
-            font-size: 0.92rem;
+            background-color: #fceade;
+            color: #38220f;
+            border: 2px solid #b08968;
+            padding: 10px 14px;
+            font-size: 0.9rem;
             font-weight: 700;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             text-align: left;
-            margin-bottom: 10px;
             width: 100%;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
             transition: all 0.2s ease;
         }
         .option-btn:hover {
-            background-color: #bc6c25;
+            background-color: #dda15e;
             color: #ffffff;
-            transform: translateX(5px);
+            transform: translateX(4px);
         }
 
-        /* 6. KARAKTER ANIMASI */
-        #character {
-            position: absolute;
-            bottom: 75px;
-            left: 50px;
-            width: 38px;
-            height: 55px;
-            background: linear-gradient(135deg, #e76f51, #c84b31);
-            border-radius: 16px 16px 5px 5px;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-            z-index: 10;
-            transition: left 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        #character::after {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: 7px;
-            width: 24px;
-            height: 24px;
-            background: #ffecd1;
-            border-radius: 50%;
-        }
-
-        /* STATE POSISI & ANIMASI JEMBATAN */
-        #game-container.state-step1 #character { left: 110px; transform: translateY(-5px) rotate(-5deg); }
-        #game-container.state-step1 #bridge-wrapper { transform: rotate(-8deg) translateY(6px); }
-
-        #game-container.state-step2 #character { left: 170px; transform: translateY(-12px) rotate(-12deg); }
-        #game-container.state-step2 #bridge-wrapper { transform: rotate(-18deg) translateY(18px); }
-
-        #game-container.state-win #character { left: 220px; transform: translateY(0); }
-        #game-container.state-win #bridge-wrapper { transform: rotate(0deg); }
-
-        #game-container.state-fall #bridge-wrapper {
-            animation: bridgeFall 0.7s forwards cubic-bezier(0.55, 0.08, 0.68, 0.53);
-        }
-        #game-container.state-fall #character {
-            animation: charFall 0.7s forwards cubic-bezier(0.55, 0.08, 0.68, 0.53);
-        }
-        @keyframes bridgeFall {
-            0% { transform: rotate(-18deg) translateY(18px); }
-            100% { transform: rotate(65deg) translateY(120px); opacity: 0.3; }
-        }
-        @keyframes charFall {
-            0% { left: 170px; transform: translateY(-12deg); opacity: 1; }
-            100% { left: 195px; transform: translateY(140px) scale(0.3) rotate(-90deg); opacity: 0; }
-        }
-
+        /* KONTROL BAWAH */
         #controls {
-            margin-top: 15px;
+            margin-top: 12px;
             display: flex;
             gap: 15px;
             align-items: center;
+            z-index: 10;
         }
         #status-msg {
             color: #fffae5;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 600;
         }
         .reset-btn {
@@ -289,8 +156,8 @@
             background-color: #dda15e;
             color: #283618;
             border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 6px 14px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 700;
         }
@@ -299,41 +166,18 @@
 </head>
 <body>
 
-    <div id="game-container" class="state-start">
-        <!-- LANGIT & AWAN -->
-        <div class="sky-bg"></div>
+    <div id="game-container">
+        <!-- Efek Animasi Awan & Air -->
+        <div class="moving-clouds"></div>
+        <div class="flowing-water"></div>
 
-        <!-- PAPAN KAYU UTAMA DI ATAS (SOAL) -->
+        <!-- Papan Kayu Atas (Soal) -->
         <div id="wooden-sign">
-            <div class="sign-rope-left"></div>
-            <div class="sign-rope-right"></div>
             <div id="question-text">Memuat soal dari Google Spreadsheet...</div>
         </div>
 
-        <!-- SISI KIRI: SUNGAI, POHON, & JEMBATAN -->
-        <div class="river-area">
-            <div class="river-rock"></div>
-        </div>
-        <div class="palm-cluster-left"></div>
-
-        <div id="bridge-wrapper">
-            <div class="bridge-poles">
-                <div class="bridge-pole bp-left"></div>
-                <div class="bridge-pole bp-right"></div>
-            </div>
-            <div class="bridge-ropes"></div>
-            <div class="bridge-planks"></div>
-        </div>
-        <div id="character"></div>
-
-        <!-- SISI KANAN: CANDI & GULUNGAN KERTAS (OPSI JAWABAN) -->
-        <div class="temple-structure"></div>
-
-        <div id="scroll-parchment">
-            <div id="options-container">
-                <!-- Tombol opsi dimuat otomatis dari spreadsheet -->
-            </div>
-        </div>
+        <!-- Area Gulungan Kertas Tengah (Opsi Jawaban) -->
+        <div id="scroll-options"></div>
     </div>
 
     <div id="controls">
@@ -342,30 +186,23 @@
     </div>
 
     <script>
-        // ==========================================
-        // GANTI URL DI BAWAH DENGAN WEB APP URL SPREADSHEET KAMU
-        // ==========================================
         const SPREADSHEET_API_URL = "URL_GOOGLE_SPREADSHEET_API_KAMU_DISINI";
 
         let questions = [];
         let currentIndex = 0;
-        let mistakes = 0;
-        const container = document.getElementById("game-container");
-        const statusMsg = document.getElementById("status-msg");
         const questionText = document.getElementById("question-text");
-        const optionsContainer = document.getElementById("options-container");
+        const optionsContainer = document.getElementById("scroll-options");
+        const statusMsg = document.getElementById("status-msg");
 
         async function initGame() {
             statusMsg.innerText = "Mengambil data soal dari Spreadsheet...";
-            container.className = "state-start";
-            mistakes = 0;
             currentIndex = 0;
 
             try {
                 const response = await fetch(SPREADSHEET_API_URL);
                 const data = await response.json();
                 
-                questions = data.map(row => ({
+                questions = data.log ? data : data.map(row => ({
                     question: row[0],
                     options: [row[1], row[2], row[3], row[4]],
                     answer: String(row[5]).trim()
@@ -373,7 +210,7 @@
 
                 if (questions.length > 0) {
                     loadQuestion();
-                    statusMsg.innerText = "Status: Jawab pertanyaan di gulungan kertas!";
+                    statusMsg.innerText = "Status: Silakan jawab pertanyaan di atas!";
                 } else {
                     questionText.innerText = "Tidak ada soal ditemukan di Spreadsheet.";
                 }
@@ -391,10 +228,9 @@
 
         function loadQuestion() {
             if (currentIndex >= questions.length) {
-                container.className = "state-win";
                 questionText.innerText = "🎉 Luar Biasa! Kamu berhasil menyelesaikan semua pertanyaan!";
-                optionsContainer.innerHTML = `<button class="option-btn" onclick="initGame()">Mainkan Lagi</button>`;
-                statusMsg.innerText = "Status: Selesai dengan sukses!";
+                optionsContainer.innerHTML = `<button class="option-btn" onclick="initGame()">Mainkan Lagi Dari Awal</button>`;
+                statusMsg.innerText = "Status: Selesai!";
                 return;
             }
 
@@ -416,26 +252,11 @@
 
             if (isCorrect) {
                 currentIndex++;
-                mistakes = 0;
-                container.className = "state-step1";
-                statusMsg.innerText = "✨ Jawaban Benar! Melangkah maju.";
-                setTimeout(() => loadQuestion(), 800);
+                statusMsg.innerText = "✨ Benar! Melanjutkan ke soal berikutnya...";
+                setTimeout(() => loadQuestion(), 700);
             } else {
-                mistakes++;
-                if (mistakes === 1) {
-                    container.className = "state-step1";
-                    statusMsg.innerText = "❌ Kurang tepat: Jembatan mulai miring!";
-                } else if (mistakes === 2) {
-                    container.className = "state-step2";
-                    statusMsg.innerText = "❌ Nyaris celaka: Jembatan miring tajam!";
-                } else {
-                    container.className = "state-fall";
-                    statusMsg.innerText = "💥 Jembatan rubuh! Kamu tercebur ke sungai.";
-                    optionsContainer.innerHTML = `<button class="option-btn" onclick="initGame()">Coba Lagi</button>`;
-                    return;
-                }
-                currentIndex++;
-                setTimeout(() => loadQuestion(), 800);
+                statusMsg.innerText = "❌ Kurang tepat, coba lagi ya!";
+                setTimeout(() => loadQuestion(), 700);
             }
         }
 
