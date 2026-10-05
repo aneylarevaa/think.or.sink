@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Think or Sink - Ghibli Cinematic Edition</title>
+    <title>Think or Sink - Custom Adventure Edition</title>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -15,7 +15,7 @@
 
         body {
             font-family: 'Quicksand', sans-serif;
-            background-color: #070b19;
+            background-color: #0b132b;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -24,339 +24,253 @@
             overflow: hidden;
         }
 
-        /* --- CONTAINER UTAMA --- */
+        /* --- KANVAS UTAMA (MENGIKUTI REFERENSI PERSIS) --- */
         #game-container {
             position: relative;
-            width: 900px;
-            height: 550px;
-            background: linear-gradient(180deg, #88d4bc 0%, #b4f0dc 60%, #e2fceb 100%);
-            border: 6px solid #232924;
-            border-radius: 24px;
+            width: 1000px;
+            height: 562px;
+            background: linear-gradient(180deg, #bce1f0 0%, #d8edf5 60%, #eef6f9 100%);
+            border: 5px solid #283618;
+            border-radius: 18px;
             overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
 
-        /* 1. AWAN CAT AIR HALUS & BERLAPIS */
-        .cloud {
+        /* 1. ELEMEN LATAR BELAKANG: LANGIT & AWAN */
+        .sky-bg {
             position: absolute;
-            background: rgba(255, 255, 255, 0.85);
-            border-radius: 120px;
-            animation: driftCloud linear infinite;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 1;
         }
-        .cloud::before, .cloud::after {
-            content: '';
-            position: absolute;
-            background: rgba(255, 255, 255, 0.85);
-            border-radius: 50%;
-        }
-        .c-1 { width: 180px; height: 50px; top: 30px; left: -200px; animation-duration: 55s; }
-        .c-1::before { width: 70px; height: 70px; top: -35px; left: 30px; }
-        .c-1::after { width: 90px; height: 90px; top: -50px; left: 80px; }
 
-        .c-2 { width: 130px; height: 40px; top: 95px; left: -250px; animation-duration: 40s; animation-delay: 15s; }
-        .c-2::before { width: 50px; height: 50px; top: -25px; left: 20px; }
-        .c-2::after { width: 65px; height: 65px; top: -35px; left: 50px; }
-
-        @keyframes driftCloud {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(1200px); }
-        }
-
-        /* 2. BUKIT HIJAU & POHON GHIBLI */
-        .hill-back {
-            position: absolute;
-            bottom: 160px;
-            left: -60px;
-            width: 1020px;
-            height: 280px;
-            background: #588157;
-            border-radius: 50% 50% 0 0;
-            z-index: 2;
-            box-shadow: inset 0 20px 20px rgba(0,0,0,0.1);
-        }
-        .hill-front {
-            position: absolute;
-            bottom: 120px;
-            right: -100px;
-            width: 750px;
-            height: 250px;
-            background: #3a5a40;
-            border-radius: 50% 50% 0 0;
-            z-index: 2;
-        }
-
-        .tree {
-            position: absolute;
-            bottom: 210px;
-            z-index: 3;
-        }
-        .trunk {
-            width: 20px;
-            height: 70px;
-            background: #4a3525;
-            margin: 0 auto;
-            border-radius: 6px;
-        }
-        .leaves {
-            width: 105px;
-            height: 115px;
-            background: #283618;
-            border-radius: 50%;
-            position: absolute;
-            top: -65px;
-            left: -42px;
-            box-shadow: inset -12px -12px 0px rgba(0,0,0,0.25);
-        }
-        .t-left { left: 80px; }
-        .t-right { right: 70px; bottom: 250px; transform: scale(0.8); }
-
-        /* 3. SUNGAI TENANG & SHIMMER CAHAYA */
-        .river-bed {
+        /* 2. AREA KIRI: SUNGAI & JEMBATAN GANTUNG */
+        .river-area {
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 100%;
-            height: 150px;
-            background: linear-gradient(180deg, #1d6f73 0%, #114b5f 50%, #0b2545 100%);
-            z-index: 4;
-            overflow: hidden;
-            border-top: 4px solid #70af85;
+            width: 48%;
+            height: 220px;
+            background: linear-gradient(180deg, #70c1b3 0%, #247ba0 100%);
+            z-index: 2;
+            border-top: 4px solid #52b788;
         }
-        .water-shimmer {
+        
+        /* Batu Sungai */
+        .river-rock {
             position: absolute;
-            width: 200%;
-            height: 100%;
-            background-repeat: repeat-x;
-        }
-        .ws-1 {
-            background: radial-gradient(circle, rgba(255,255,255,0.4) 10%, transparent 11%);
-            background-size: 60px 30px;
-            top: 12px;
-            animation: flowWater 14s linear infinite;
-        }
-        .ws-2 {
-            background: radial-gradient(circle, rgba(143,243,212,0.3) 8%, transparent 9%);
-            background-size: 80px 40px;
-            top: 35px;
-            animation: flowWater 18s linear infinite reverse;
-        }
-        @keyframes flowWater {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+            bottom: 30px;
+            left: 170px;
+            width: 90px;
+            height: 45px;
+            background: #3a5a40;
+            border-radius: 50%;
+            z-index: 3;
+            box-shadow: inset -5px -5px 0px rgba(0,0,0,0.3);
         }
 
-        /* 4. JEMBATAN KAYU LENGKUNG KLASIK */
+        /* Jembatan Gantung Interaktif */
         #bridge-wrapper {
             position: absolute;
-            bottom: 82px;
-            left: 135px;
-            width: 300px;
-            height: 120px;
-            z-index: 5;
+            bottom: 50px;
+            left: 20px;
+            width: 250px;
+            height: 100px;
+            z-index: 4;
             transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
             transform-origin: left bottom;
         }
-        .bridge-arch {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-        }
-        .bridge-deck {
+        .bridge-planks {
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 75px;
-            background: #7f4f24;
-            border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-            border-top: 6px solid #dda15e;
-            box-shadow: 0 15px 25px rgba(0,0,0,0.4);
+            height: 35px;
+            background: #8c5830;
+            border-radius: 6px;
+            border-top: 4px solid #b07d62;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
         }
-        .bridge-rail {
+        .bridge-ropes {
             position: absolute;
-            top: -16px;
+            top: -20px;
             width: 100%;
-            height: 45px;
-            border-top: 5px solid #432818;
-        }
-        .rail-pillar {
-            position: absolute;
-            width: 9px;
             height: 50px;
-            background: #432818;
+            border-top: 4px dashed #5c4033;
+            border-radius: 50% 50% 0 0;
+        }
+        .bridge-pole {
+            position: absolute;
             bottom: 0;
+            width: 12px;
+            height: 90px;
+            background: #5c4033;
             border-radius: 3px;
         }
-        .rp1 { left: 15px; }
-        .rp2 { left: 88px; height: 58px; top: -8px; }
-        .rp3 { left: 150px; height: 62px; top: -12px; }
-        .rp4 { left: 212px; height: 58px; top: -8px; }
-        .rp5 { left: 280px; }
+        .bp-left { left: 10px; }
+        .bp-right { right: 10px; }
 
-        /* 5. KARAKTER ANIMASI MULUS */
-        #character {
+        /* Pohon Kelapa / Tropis Kiri */
+        .palm-cluster-left {
             position: absolute;
-            bottom: 95px;
-            left: 65px;
-            width: 40px;
-            height: 60px;
-            background: linear-gradient(135deg, #e76f51, #c84b31);
-            border-radius: 18px 18px 6px 6px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.35);
-            z-index: 10;
-            transition: left 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
-                        transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            bottom: 120px;
+            left: 180px;
+            width: 140px;
+            height: 160px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,100 L50,40 Q30,20 10,10 Q40,30 50,40 Q70,20 90,5 Q60,30 50,40 Z" fill="%232d6a4f"/><path d="M45,100 L45,45 Q20,35 0,30 Q35,40 45,45 Q70,35 95,20 Q60,40 45,45 Z" fill="%2340916c"/></svg>') no-repeat;
+            background-size: contain;
+            z-index: 2;
         }
-        #character::after {
+
+        /* 3. AREA KANAN: CANDI / RELIEF & GULUNGAN KERTAS */
+        .temple-structure {
+            position: absolute;
+            bottom: 70px;
+            right: 40px;
+            width: 110px;
+            height: 180px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 160"><rect x="30" y="10" width="40" height="150" fill="%23584033"/><polygon points="20,20 50,0 80,20" fill="%2338220f"/><polygon points="25,50 50,30 75,50" fill="%2338220f"/><polygon points="30,80 50,60 70,80" fill="%2338220f"/><rect x="40" y="110" width="20" height="50" fill="%231f1309"/></svg>') no-repeat;
+            background-size: contain;
+            z-index: 3;
+        }
+
+        /* Gulungan Kertas / Scroll Tengah (Tempat Opsi Jawaban) */
+        #scroll-parchment {
+            position: absolute;
+            top: 130px;
+            right: 170px;
+            width: 480px;
+            height: 380px;
+            background: #f4ecdc;
+            border: 3px dashed #b08968;
+            border-radius: 12px;
+            padding: 30px 25px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        /* Efek gerigi pinggir kertas */
+        #scroll-parchment::before {
             content: '';
             position: absolute;
-            top: -12px;
-            left: 8px;
-            width: 24px;
-            height: 24px;
-            background: #ffecd1;
-            border-radius: 50%;
-            box-shadow: inset -2px -2px 0px rgba(0,0,0,0.1);
+            top: -6px; left: 10px; right: 10px; height: 6px;
+            background: radial-gradient(circle, #f4ecdc 40%, transparent 41%);
+            background-size: 15px 15px;
         }
 
-        .walking #character {
-            animation: walkBob 0.35s ease-in-out infinite alternate;
-        }
-        @keyframes walkBob {
-            0% { transform: translateY(0) rotate(var(--cRot, 0deg)); }
-            100% { transform: translateY(-7px) rotate(calc(var(--cRot, 0deg) - 2deg)); }
-        }
-
-        /* --- STATE POSISI --- */
-        #game-container.state-start #character {
-            left: 65px;
-            --cRot: 0deg;
-            transform: translateY(0) rotate(0deg);
-        }
-        #game-container.state-step1 #character {
-            left: 135px;
-            --cRot: -4deg;
-            transform: translateY(-5deg) rotate(-4deg);
-        }
-        #game-container.state-step1 #bridge-wrapper {
-            transform: rotate(-5deg) translateY(8px);
-        }
-        #game-container.state-step2 #character {
-            left: 210px;
-            --cRot: -12deg;
-            transform: translateY(-12deg) rotate(-12deg);
-        }
-        #game-container.state-step2 #bridge-wrapper {
-            transform: rotate(-16deg) translateY(22px);
-        }
-        #game-container.state-win #character {
-            left: 310px;
-            --cRot: 0deg;
-            transform: translateY(0) rotate(0deg);
-            animation: victoryJump 0.5s ease infinite alternate;
-        }
-        #game-container.state-win #bridge-wrapper {
-            transform: rotate(0deg) translateY(0);
-        }
-        @keyframes victoryJump {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-14px); }
-        }
-
-        #game-container.state-fall #bridge-wrapper {
-            animation: bridgeFallAnim 0.75s forwards cubic-bezier(0.55, 0.08, 0.68, 0.53);
-        }
-        #game-container.state-fall #character {
-            animation: charFallAnim 0.75s forwards cubic-bezier(0.55, 0.08, 0.68, 0.53);
-        }
-        @keyframes bridgeFallAnim {
-            0% { transform: rotate(-16deg) translateY(22px); }
-            50% { transform: rotate(25deg) translateY(80px); }
-            100% { transform: rotate(70deg) translateY(150px); opacity: 0.35; }
-        }
-        @keyframes charFallAnim {
-            0% { left: 210px; transform: translateY(-12deg) rotate(-12deg); opacity: 1; }
-            40% { left: 235px; transform: translateY(80px) rotate(-45deg); opacity: 1; }
-            100% { left: 260px; transform: translateY(170px) scale(0.35) rotate(-90deg); opacity: 0; }
-        }
-
-        #splash-effect {
+        /* 4. PAPAN KAYU UTAMA DI ATAS (Tempat Soal) */
+        #wooden-sign {
             position: absolute;
-            bottom: 45px;
-            left: 240px;
-            width: 90px;
-            height: 45px;
-            background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 70%);
-            border-radius: 50%;
-            opacity: 0;
-            z-index: 12;
-            pointer-events: none;
-        }
-        #game-container.state-fall #splash-effect {
-            animation: splashBurst 0.6s 0.3s forwards ease-out;
-        }
-        @keyframes splashBurst {
-            0% { transform: scale(0.2); opacity: 1; }
-            100% { transform: scale(2.8); opacity: 0; }
-        }
-
-        /* 6. PAPAN SOAL & OPSI JAWABAN */
-        #question-board {
-            position: absolute;
-            top: 22px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            width: 700px;
-            background: linear-gradient(180deg, #9c6644 0%, #7f4f24 100%);
-            border: 4px solid #381d0a;
-            padding: 14px 25px;
-            border-radius: 16px;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
-            text-align: center;
+            width: 650px;
+            height: 95px;
+            background: linear-gradient(135deg, #a66321 0%, #7f4f24 100%);
+            border: 4px solid #3d2314;
+            border-radius: 14px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
             z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 30px;
+            text-align: center;
         }
+        /* Tali Pengikat Papan Kayu */
+        .sign-rope-left, .sign-rope-right {
+            position: absolute;
+            top: -20px;
+            width: 10px;
+            height: 30px;
+            background: #d4a373;
+            border: 2px solid #3d2314;
+            border-radius: 4px;
+        }
+        .sign-rope-left { left: 60px; }
+        .sign-rope-right { right: 60px; }
+
         #question-text {
             color: #fffae5;
             font-family: 'Nunito', sans-serif;
-            font-size: 1.15rem;
-            font-weight: 800;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+            font-size: 1.05rem;
+            font-weight: 900;
+            text-shadow: 2px 2px 3px rgba(0,0,0,0.6);
         }
 
-        #scroll-options {
-            position: absolute;
-            top: 115px;
-            right: 40px;
-            width: 430px;
-            background: #fefae0;
-            border: 3px solid #dda15e;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-            z-index: 20;
-        }
-
+        /* 5. TOMBOL OPSI JAWABAN */
         .option-btn {
             font-family: 'Quicksand', sans-serif;
             background-color: #dda15e;
             color: #283618;
             border: 2px solid #bc6c25;
-            padding: 10px 14px;
-            font-size: 0.9rem;
+            padding: 11px 16px;
+            font-size: 0.92rem;
             font-weight: 700;
             border-radius: 10px;
             cursor: pointer;
             text-align: left;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             width: 100%;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.06);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+            transition: all 0.2s ease;
         }
         .option-btn:hover {
             background-color: #bc6c25;
             color: #ffffff;
-            transform: translateX(6px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            transform: translateX(5px);
+        }
+
+        /* 6. KARAKTER ANIMASI */
+        #character {
+            position: absolute;
+            bottom: 75px;
+            left: 50px;
+            width: 38px;
+            height: 55px;
+            background: linear-gradient(135deg, #e76f51, #c84b31);
+            border-radius: 16px 16px 5px 5px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            z-index: 10;
+            transition: left 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        #character::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 7px;
+            width: 24px;
+            height: 24px;
+            background: #ffecd1;
+            border-radius: 50%;
+        }
+
+        /* STATE POSISI & ANIMASI JEMBATAN */
+        #game-container.state-step1 #character { left: 110px; transform: translateY(-5px) rotate(-5deg); }
+        #game-container.state-step1 #bridge-wrapper { transform: rotate(-8deg) translateY(6px); }
+
+        #game-container.state-step2 #character { left: 170px; transform: translateY(-12px) rotate(-12deg); }
+        #game-container.state-step2 #bridge-wrapper { transform: rotate(-18deg) translateY(18px); }
+
+        #game-container.state-win #character { left: 220px; transform: translateY(0); }
+        #game-container.state-win #bridge-wrapper { transform: rotate(0deg); }
+
+        #game-container.state-fall #bridge-wrapper {
+            animation: bridgeFall 0.7s forwards cubic-bezier(0.55, 0.08, 0.68, 0.53);
+        }
+        #game-container.state-fall #character {
+            animation: charFall 0.7s forwards cubic-bezier(0.55, 0.08, 0.68, 0.53);
+        }
+        @keyframes bridgeFall {
+            0% { transform: rotate(-18deg) translateY(18px); }
+            100% { transform: rotate(65deg) translateY(120px); opacity: 0.3; }
+        }
+        @keyframes charFall {
+            0% { left: 170px; transform: translateY(-12deg); opacity: 1; }
+            100% { left: 195px; transform: translateY(140px) scale(0.3) rotate(-90deg); opacity: 0; }
         }
 
         #controls {
@@ -375,60 +289,50 @@
             background-color: #dda15e;
             color: #283618;
             border: none;
-            padding: 8px 18px;
+            padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 700;
-            transition: background 0.2s;
         }
-        .reset-btn:hover {
-            background-color: #bc6c25;
-            color: white;
-        }
+        .reset-btn:hover { background-color: #bc6c25; color: white; }
     </style>
 </head>
 <body>
 
     <div id="game-container" class="state-start">
-        <div class="cloud c-1"></div>
-        <div class="cloud c-2"></div>
-        <div class="hill-back"></div>
-        <div class="hill-front"></div>
-        <div class="tree t-left">
-            <div class="trunk"></div>
-            <div class="leaves"></div>
-        </div>
-        <div class="tree t-right">
-            <div class="trunk"></div>
-            <div class="leaves"></div>
-        </div>
+        <!-- LANGIT & AWAN -->
+        <div class="sky-bg"></div>
 
-        <div id="question-board">
+        <!-- PAPAN KAYU UTAMA DI ATAS (SOAL) -->
+        <div id="wooden-sign">
+            <div class="sign-rope-left"></div>
+            <div class="sign-rope-right"></div>
             <div id="question-text">Memuat soal dari Google Spreadsheet...</div>
         </div>
 
+        <!-- SISI KIRI: SUNGAI, POHON, & JEMBATAN -->
+        <div class="river-area">
+            <div class="river-rock"></div>
+        </div>
+        <div class="palm-cluster-left"></div>
+
         <div id="bridge-wrapper">
-            <div class="bridge-arch">
-                <div class="bridge-deck"></div>
-                <div class="bridge-rail">
-                    <div class="rail-pillar rp1"></div>
-                    <div class="rail-pillar rp2"></div>
-                    <div class="rail-pillar rp3"></div>
-                    <div class="rail-pillar rp4"></div>
-                    <div class="rail-pillar rp5"></div>
-                </div>
+            <div class="bridge-poles">
+                <div class="bridge-pole bp-left"></div>
+                <div class="bridge-pole bp-right"></div>
             </div>
+            <div class="bridge-ropes"></div>
+            <div class="bridge-planks"></div>
         </div>
         <div id="character"></div>
-        <div id="splash-effect"></div>
 
-        <div class="river-bed">
-            <div class="water-shimmer ws-1"></div>
-            <div class="water-shimmer ws-2"></div>
-        </div>
+        <!-- SISI KANAN: CANDI & GULUNGAN KERTAS (OPSI JAWABAN) -->
+        <div class="temple-structure"></div>
 
-        <div id="scroll-options" id="options-container">
-            <!-- Tombol opsi akan dimuat otomatis dari spreadsheet -->
+        <div id="scroll-parchment">
+            <div id="options-container">
+                <!-- Tombol opsi dimuat otomatis dari spreadsheet -->
+            </div>
         </div>
     </div>
 
@@ -439,9 +343,9 @@
 
     <script>
         // ==========================================
-        // GANTI URL DI BAWAH DENGAN WEB APP URL / API SPREADSHEET KAMU
+        // GANTI URL DI BAWAH DENGAN WEB APP URL SPREADSHEET KAMU
         // ==========================================
-        const SPREADSHEET_API_URL = "https://sheetdb.io/api/v1/sf6lawxbra0x6";
+        const SPREADSHEET_API_URL = "URL_GOOGLE_SPREADSHEET_API_KAMU_DISINI";
 
         let questions = [];
         let currentIndex = 0;
@@ -449,7 +353,7 @@
         const container = document.getElementById("game-container");
         const statusMsg = document.getElementById("status-msg");
         const questionText = document.getElementById("question-text");
-        const optionsContainer = document.getElementById("scroll-options");
+        const optionsContainer = document.getElementById("options-container");
 
         async function initGame() {
             statusMsg.innerText = "Mengambil data soal dari Spreadsheet...";
@@ -458,11 +362,9 @@
             currentIndex = 0;
 
             try {
-                // Jika kamu pakai Google Apps Script Web App, ambil data dengan fetch:
                 const response = await fetch(SPREADSHEET_API_URL);
                 const data = await response.json();
                 
-                // Asumsi data format array dari spreadsheet: [[soal, optA, optB, optC, optD, jawaban], ...]
                 questions = data.map(row => ({
                     question: row[0],
                     options: [row[1], row[2], row[3], row[4]],
@@ -471,29 +373,28 @@
 
                 if (questions.length > 0) {
                     loadQuestion();
-                    statusMsg.innerText = "Status: Jawab pertanyaan dengan benar untuk menyeberang!";
+                    statusMsg.innerText = "Status: Jawab pertanyaan di gulungan kertas!";
                 } else {
                     questionText.innerText = "Tidak ada soal ditemukan di Spreadsheet.";
                 }
             } catch (error) {
                 console.error("Gagal memuat API:", error);
-                // Mode Dummy Cadangan jika API belum di-setup penuh agar animasi tetap bisa dites
+                // Mode Simulasi Cadangan
                 questions = [
-                    { question: "Contoh Soal 1: Apa bahasa Inggris 'Kucing'?", options: ["Dog", "Cat", "Bird", "Fish"], answer: "Cat" },
-                    { question: "Contoh Soal 2: Manakah yang merupakan bentuk past tense dari 'Go'?", options: ["Gone", "Going", "Went", "Goed"], answer: "Went" }
+                    { question: "Apa bahasa Inggris dari 'Kucing'?", options: ["Dog", "Cat", "Bird", "Fish"], answer: "Cat" },
+                    { question: "Manakah bentuk past tense dari 'Go'?", options: ["Gone", "Going", "Went", "Goed"], answer: "Went" }
                 ];
                 loadQuestion();
-                statusMsg.innerText = "⚠️️ Menggunakan Mode Simulasi (Ganti SPREADSHEET_API_URL dengan milikmu).";
+                statusMsg.innerText = "⚠ Menggunakan Mode Simulasi (Ganti SPREADSHEET_API_URL).";
             }
         }
 
         function loadQuestion() {
             if (currentIndex >= questions.length) {
-                // Berhasil menyeberang semua soal!
-                container.className = "state-win walking";
-                questionText.innerText = "🎉 Luar Biasa! Kamu berhasil menjawab semua soal dan menyeberang dengan selamat!";
+                container.className = "state-win";
+                questionText.innerText = "🎉 Luar Biasa! Kamu berhasil menyelesaikan semua pertanyaan!";
                 optionsContainer.innerHTML = `<button class="option-btn" onclick="initGame()">Mainkan Lagi</button>`;
-                statusMsg.innerText = "Status: Kemenangan diraih!";
+                statusMsg.innerText = "Status: Selesai dengan sukses!";
                 return;
             }
 
@@ -511,45 +412,33 @@
         }
 
         function checkAnswer(selected, correct) {
-            container.classList.remove("walking");
-            void container.offsetWidth; // Trigger reflow
-
-            // Cek kecocokan jawaban (bisa teks atau huruf pilihan)
             const isCorrect = (selected.trim().toLowerCase() === correct.toLowerCase());
 
             if (isCorrect) {
                 currentIndex++;
-                if (mistakes === 0) {
-                    container.className = "state-step1 walking";
-                } else {
-                    container.className = "state-win walking";
-                }
-                statusMsg.innerText = "✨ Benar! Karakter melangkah maju dengan mulus.";
-                setTimeout(() => {
-                    loadQuestion();
-                }, 900);
+                mistakes = 0;
+                container.className = "state-step1";
+                statusMsg.innerText = "✨ Jawaban Benar! Melangkah maju.";
+                setTimeout(() => loadQuestion(), 800);
             } else {
                 mistakes++;
                 if (mistakes === 1) {
-                    container.className = "state-step1 walking";
-                    statusMsg.innerText = "❌ Kurang tepat: Jembatan mulai miring perlahan.";
+                    container.className = "state-step1";
+                    statusMsg.innerText = "❌ Kurang tepat: Jembatan mulai miring!";
                 } else if (mistakes === 2) {
-                    container.className = "state-step2 walking";
-                    statusMsg.innerText = "❌ Hampir celaka: Jembatan miring tajam!";
+                    container.className = "state-step2";
+                    statusMsg.innerText = "❌ Nyaris celaka: Jembatan miring tajam!";
                 } else {
                     container.className = "state-fall";
-                    statusMsg.innerText = "💥 Jembatan rubuh! Karakter tercebur ke sungai.";
+                    statusMsg.innerText = "💥 Jembatan rubuh! Kamu tercebur ke sungai.";
                     optionsContainer.innerHTML = `<button class="option-btn" onclick="initGame()">Coba Lagi</button>`;
                     return;
                 }
                 currentIndex++;
-                setTimeout(() => {
-                    loadQuestion();
-                }, 900);
+                setTimeout(() => loadQuestion(), 800);
             }
         }
 
-        // Jalankan game saat halaman dimuat
         window.onload = initGame;
     </script>
 </body>
