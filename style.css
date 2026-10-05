@@ -12,7 +12,7 @@ body {
 .game-container {
     width: 1000px;
     height: 562px;
-    background: url('background.jpg') no-repeat center center;
+    background: url('background.png') no-repeat center center; /* Diubah jadi background.png */
     background-size: cover;
     position: relative;
     box-shadow: 0 10px 25px rgba(0,0,0,0.5);
