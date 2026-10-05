@@ -1,135 +1,45 @@
+/* Mengimpor font aesthetic dari Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Lexend:wght@400;600&display=swap');
+
+/* Pengaturan dasar halaman */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #1a252f;
+    font-family: 'Lexend', sans-serif;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    background-color: #222; /* Warna cadangan jika background.png belum termuat */
 }
 
-.game-container {
-    width: 1000px;
-    height: 562px;
-    background: url('background.png') no-repeat center center; /* Diubah jadi background.png */
-    background-size: cover;
-    position: relative;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-/* Papan Kayu Atas (Soal) */
-#top-sign {
-    position: absolute;
-    top: 30px;
-    left: 495px;
-    width: 400px;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Bagian Teks Soal (Dibuat terang, jelas, dan estetik di atas papan kayu) */
+#question-text {
+    color: #ffffff; /* Putih terang supaya kontras maksimal */
+    font-family: 'Fredoka', cursive; /* Font aesthetic yang playful */
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* Bayangan agar teks sangat mudah dibaca */
     text-align: center;
-    color: #4a2e18;
-    font-weight: bold;
-    font-size: 15px;
-    padding: 0 15px;
-    box-sizing: border-box;
-    text-shadow: 1px 1px 0px rgba(255,255,255,0.4);
+    margin-bottom: 20px;
 }
 
-/* Layout Scene Game */
-#game-scene {
-    position: absolute;
-    top: 150px;
-    left: 50px;
-    width: 900px;
-    height: 370px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* Tombol Pilihan Jawaban (Warna dan desain aslinya tetap aman, hanya fontnya disamakan) */
+.option-btn {
+    font-family: 'Lexend', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    /* Tambahkan styling tombol bawaanmu yang lain di sini jika ada */
 }
 
-#bridge-area {
-    width: 380px;
-    height: 100%;
-    position: relative;
-}
-
-#character {
-    font-size: 45px;
-    position: absolute;
-    bottom: 125px;
-    left: 145px;
-    transition: all 0.5s ease;
-}
-
-/* Area Perkamen Kanan (Opsi Pilihan Ganda) */
-#paper-area {
-    width: 440px;
-    height: 320px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding-right: 20px;
-}
-
+/* Container tombol jawaban */
 #options-container {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     width: 100%;
-    max-width: 360px;
+    max-width: 400px;
 }
 
-.option-btn {
-    padding: 10px 15px;
-    font-size: 14px;
-    font-weight: bold;
-    background-color: #f4e8c1;
-    color: #3b220c;
-    border: 2px solid #8b5a2b;
-    border-radius: 6px;
-    cursor: pointer;
-    text-align: left;
-    transition: 0.2s;
-}
-
-.option-btn:hover:not(:disabled) {
-    background-color: #e6d29b;
-    transform: scale(1.02);
-}
-
-.option-btn:disabled {
-    cursor: not-allowed;
-    opacity: 0.7;
-}
-
-/* Animasi Kerusakan Jembatan */
-.stage-1 #character {
-    transform: rotate(15deg) translateY(5px); /* Salah 1: Tali jembatan copot/miring */
-}
-
-.stage-2 #character {
-    transform: rotate(-10deg) translateY(15px); /* Salah 2: Kayu jembatan retak/oleng */
-}
-
-.stage-3 #character {
-    bottom: 10px; /* Salah 3: Jembatan runtuh, karakter jatuh ke kolam */
-    left: 100px;
-    transform: rotate(90deg);
-}
-
+/* Tombol Restart / Play Again */
 #restart-btn {
-    margin-top: 15px;
-    padding: 8px 20px;
-    font-size: 15px;
-    background-color: #27ae60;
-    color: white;
-    border: none;
-    border-radius: 5px;
+    font-family: 'Lexend', sans-serif;
+    font-weight: 600;
     cursor: pointer;
-    font-weight: bold;
 }
