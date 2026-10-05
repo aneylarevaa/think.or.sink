@@ -28,7 +28,7 @@
             position: relative;
             width: 1000px;
             height: 562px;
-            /* Pastikan nama file gambar background kamu sesuai di sini */
+            /* Pastikan nama file gambar background kamu sesuai (contoh: background-river.jpg) */
             background: url('background-river.jpg') no-repeat center center;
             background-size: cover;
             border: 4px solid #283618;
@@ -48,4 +48,266 @@
                 rgba(255,255,255,0) 0%, 
                 rgba(255,255,255,0.25) 30%, 
                 rgba(255,255,255,0.4) 50%, 
-                rgba(255,255,255,0.2
+                rgba(255,255,255,0.25) 70%, 
+                rgba(255,255,255,0) 100%);
+            animation: driftClouds 15s linear infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        @keyframes driftClouds {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0%); }
+        }
+
+        /* ================= ANIMASI AIR MENGIKUTI ARUS ================= */
+        .flowing-water {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 42%;
+            background: repeating-linear-gradient(
+                -45deg,
+                rgba(255, 255, 255, 0.15),
+                rgba(255, 255, 255, 0.15) 15px,
+                rgba(0, 119, 182, 0.1) 15px,
+                rgba(0, 119, 182, 0.1) 30px
+            );
+            background-size: 600px 600px;
+            animation: flowRiver 6s linear infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        @keyframes flowRiver {
+            0% { background-position: 0 0; }
+            100% { background-position: -600px 0; }
+        }
+
+        /* ================= TRANSISI MUNCUL/HILANG (FADE) ================= */
+        @keyframes popIn {
+            0% { opacity: 0; transform: translateX(-50%) scale(0.95); }
+            100% { opacity: 1; transform: translateX(-50%) scale(1); }
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-sign {
+            animation: popIn 0.3s ease-out forwards;
+        }
+
+        .animate-scroll {
+            animation: fadeIn 0.35s ease-out forwards;
+        }
+
+        /* PAPAN KAYU ATAS (SOAL) */
+        #wooden-sign {
+            position: absolute;
+            top: 45px;
+            left: 56%;
+            transform: translateX(-50%);
+            width: 440px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            text-align: center;
+            z-index: 10;
+        }
+        #question-text {
+            color: #fffae5;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 900;
+            text-shadow: 2px 2px 3px rgba(0,0,0,0.7);
+            line-height: 1.3;
+        }
+
+        /* GULUNGAN KERTAS TENGAH (OPSI JAWABAN) */
+        #scroll-options {
+            position: absolute;
+            top: 200px;
+            left: 425px;
+            width: 480px;
+            height: 290px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .option-btn {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #fceade;
+            color: #38220f;
+            border: 2px solid #b08968;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            width: 100%;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+        .option-btn:hover {
+            background-color: #dda15e;
+            color: #ffffff;
+            transform: translateX(4px);
+        }
+
+        /* KONTROL BAWAH */
+        #controls {
+            margin-top: 12px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            z-index: 10;
+        }
+        #status-msg {
+            color: #fffae5;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .reset-btn {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #dda15e;
+            color: #283618;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .reset-btn:hover { background-color: #bc6c25; color: white; }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <!-- Efek Animasi Awan & Air -->
+        <div class="moving-clouds"></div>
+        <div class="flowing-water"></div>
+
+        <!-- Papan Kayu Atas (Soal) -->
+        <div id="wooden-sign" class="animate-sign">
+            <div id="question-text">Memuat soal dari Google Spreadsheet...</div>
+        </div>
+
+        <!-- Area Gulungan Kertas Tengah (Opsi Jawaban) -->
+        <div id="scroll-options" class="animate-scroll"></div>
+    </div>
+
+    <div id="controls">
+        <div id="status-msg">Status: Menghubungkan ke Spreadsheet API...</div>
+        <button class="reset-btn" onclick="initGame()">Muat Ulang Game</button>
+    </div>
+
+    <script>
+        // ==========================================
+        // GANTI URL DI BAWAH DENGAN WEB APP URL SPREADSHEET KAMU
+        // ==========================================
+        const SPREADSHEET_API_URL = "URL_GOOGLE_SPREADSHEET_API_KAMU_DISINI";
+
+        let questions = [];
+        let currentIndex = 0;
+        const woodenSign = document.getElementById("wooden-sign");
+        const questionText = document.getElementById("question-text");
+        const scrollOptions = document.getElementById("scroll-options");
+        const statusMsg = document.getElementById("status-msg");
+
+        async function initGame() {
+            statusMsg.innerText = "Mengambil data soal dari Spreadsheet...";
+            currentIndex = 0;
+
+            try {
+                const response = await fetch(SPREADSHEET_API_URL);
+                const data = await response.json();
+                
+                questions = data.map(row => ({
+                    question: row[0],
+                    options: [row[1], row[2], row[3], row[4]],
+                    answer: String(row[5]).trim()
+                }));
+
+                if (questions.length > 0) {
+                    loadQuestion();
+                    statusMsg.innerText = "Status: Silakan jawab pertanyaan di atas!";
+                } else {
+                    questionText.innerText = "Tidak ada soal ditemukan di Spreadsheet.";
+                }
+            } catch (error) {
+                console.error("Gagal memuat API:", error);
+                // Mode Simulasi Cadangan
+                questions = [
+                    { question: "Apa bahasa Inggris dari 'Kucing'?", options: ["Dog", "Cat", "Bird", "Fish"], answer: "Cat" },
+                    { question: "Manakah bentuk past tense dari 'Go'?", options: ["Gone", "Going", "Went", "Goed"], answer: "Went" }
+                ];
+                loadQuestion();
+                statusMsg.innerText = "⚠ Menggunakan Mode Simulasi (Ganti SPREADSHEET_API_URL).";
+            }
+        }
+
+        function loadQuestion() {
+            if (currentIndex >= questions.length) {
+                triggerTransition();
+                questionText.innerText = "🎉 Luar Biasa! Kamu berhasil menyelesaikan semua pertanyaan!";
+                scrollOptions.innerHTML = `<button class="option-btn" onclick="initGame()">Mainkan Lagi Dari Awal</button>`;
+                statusMsg.innerText = "Status: Selesai!";
+                return;
+            }
+
+            const q = questions[currentIndex];
+            
+            // Picu animasi transisi cepat
+            triggerTransition();
+
+            questionText.innerText = `(${currentIndex + 1}/${questions.length}) ${q.question}`;
+            scrollOptions.innerHTML = "";
+
+            q.options.forEach(opt => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(opt, q.answer);
+                scrollOptions.appendChild(btn);
+            });
+        }
+
+        function triggerTransition() {
+            // Hapus kelas animasi sebentar lalu pasang kembali agar efek muncul/hilangnya ter-trigger ulang
+            woodenSign.classList.remove("animate-sign");
+            scrollOptions.classList.remove("animate-scroll");
+            
+            void woodenSign.offsetWidth; // Trigger reflow
+            void scrollOptions.offsetWidth;
+
+            woodenSign.classList.add("animate-sign");
+            scrollOptions.classList.add("animate-scroll");
+        }
+
+        function checkAnswer(selected, correct) {
+            const isCorrect = (selected.trim().toLowerCase() === correct.toLowerCase());
+
+            if (isCorrect) {
+                currentIndex++;
+                statusMsg.innerText = "✨ Benar! Melanjutkan ke soal berikutnya...";
+                setTimeout(() => loadQuestion(), 500);
+            } else {
+                statusMsg.innerText = "❌ Kurang tepat, coba lagi ya!";
+                setTimeout(() => loadQuestion(), 500);
+            }
+        }
+
+        window.onload = initGame;
+    </script>
+</body>
+</html>
