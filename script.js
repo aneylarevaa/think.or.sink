@@ -1,5 +1,5 @@
 // Ganti URL di bawah ini dengan URL API Google Apps Script kamu nanti
-const API_URL = "https://script.google.com/macros/s/AKfycbx01CyqyhXNeFp7NHk6_Ntm5_5BcOvIBJqxI6lEjSsLVSCqaQm_GzejgwihrlPPtBit/exec";
+const API_URL = "https://sheetdb.io/api/v1/sf6lawxbra0x6";
 
 let questions = [];
 let currentQuestionIndex = 0;
