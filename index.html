@@ -36,12 +36,12 @@
             overflow: hidden;
         }
 
-        /* LOGO GAMBAR BUATAN SENDIRI DI POJOK KIRI ATAS */
+        /* LOGO GAMBAR DI DALAM GAME (DIPERBESAR DIKIT) */
         #game-logo {
             position: absolute;
             top: 15px;
             left: 20px;
-            height: 45px; /* Sesuaikan ukuran tingginya jika kurang besar/kecil */
+            height: 65px; /* Diperbesar dari 45px ke 65px */
             width: auto;
             z-index: 20;
             filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5));
@@ -62,6 +62,14 @@
             justify-content: center;
             z-index: 30;
             transition: opacity 0.4s ease;
+        }
+
+        /* LOGO DI MENU UTAMA */
+        #menu-logo {
+            height: 90px; /* Ukuran logo di halaman utama lebih besar lagi biar ciamik */
+            width: auto;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
         }
 
         .menu-title {
@@ -215,11 +223,13 @@
 <body>
 
     <div id="game-container">
-        <!-- Logo Gambar Buatan Sendiri (Pastikan file logo.png diupload ke GitHub) -->
+        <!-- Logo Gambar di Pojok Kiri Atas Game -->
         <img id="game-logo" src="logo.png" alt="Logo">
 
         <!-- Landing Page / Menu Utama (Muncul Pertama Kali) -->
         <div id="main-menu">
+            <!-- Logo Besar di Menu Utama -->
+            <img id="menu-logo" src="logo.png" alt="Logo">
             <h1 class="menu-title">Think or Sink</h1>
             <p class="menu-subtitle">Test your knowledge before the bridge collapses!</p>
             <button class="play-btn" onclick="startGame()">PLAY</button>
