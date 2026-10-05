@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bridge Mystery - Quiz Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="game-container">
+        <!-- Papan Kayu Atas: Tempat Soal -->
+        <div id="top-sign">
+            <p id="question-text">Loading questions from spreadsheet...</p>
+        </div>
+
+        <!-- Area Utama (Jembatan di kiri, Area Opsi Perkamen di kanan) -->
+        <div id="game-scene">
+            <!-- Jembatan dan Karakter -->
+            <div id="bridge-area" class="stage-0">
+                <div id="character">🧍</div>
+            </div>
+
+            <!-- Area Kanan (Perkamen untuk 4 Opsi Jawaban) -->
+            <div id="paper-area">
+                <div id="options-container">
+                    <!-- 4 Tombol Pilihan Ganda akan digenerate otomatis -->
+                </div>
+                <button id="restart-btn" style="display:none;">Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
