@@ -41,7 +41,6 @@
             position: absolute;
             background: rgba(255, 255, 255, 0.85);
             border-radius: 120px;
-            filter: blur(0.5px);
             animation: driftCloud linear infinite;
             z-index: 1;
         }
@@ -64,7 +63,7 @@
             100% { transform: translateX(1200px); }
         }
 
-        /* 2. BUKIT HIJAU & RUMPUT BERTERURAI ESTETIK */
+        /* 2. BUKIT HIJAU & POHON GHIBLI */
         .hill-back {
             position: absolute;
             bottom: 160px;
@@ -87,7 +86,6 @@
             z-index: 2;
         }
 
-        /* Pohon Khas Ghibli */
         .tree {
             position: absolute;
             bottom: 210px;
@@ -113,7 +111,7 @@
         .t-left { left: 80px; }
         .t-right { right: 70px; bottom: 250px; transform: scale(0.8); }
 
-        /* 3. SUNGAI TENANG, BERKILAU & ARUS SANGAT HALUS */
+        /* 3. SUNGAI TENANG & SHIMMER CAHAYA */
         .river-bed {
             position: absolute;
             bottom: 0;
@@ -125,8 +123,6 @@
             overflow: hidden;
             border-top: 4px solid #70af85;
         }
-
-        /* Efek Pantulan Cahaya di Air (Shimmer) */
         .water-shimmer {
             position: absolute;
             width: 200%;
@@ -150,7 +146,7 @@
             100% { transform: translateX(-50%); }
         }
 
-        /* 4. JEMBATAN KAYU LENGKUNG KLASIK (TRANSISI SUPER MULUS) */
+        /* 4. JEMBATAN KAYU LENGKUNG KLASIK */
         #bridge-wrapper {
             position: absolute;
             bottom: 82px;
@@ -161,7 +157,6 @@
             transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
             transform-origin: left bottom;
         }
-
         .bridge-arch {
             position: absolute;
             width: 100%;
@@ -198,18 +193,17 @@
         .rp4 { left: 212px; height: 58px; top: -8px; }
         .rp5 { left: 280px; }
 
-        /* 5. KARAKTER ANIMASI MULUS (CINEMATIC WALKING & IDLE) */
+        /* 5. KARAKTER ANIMASI MULUS */
         #character {
             position: absolute;
             bottom: 95px;
-            left: 65px; /* Posisi awal di luar jembatan (kiri) */
+            left: 65px;
             width: 40px;
             height: 60px;
             background: linear-gradient(135deg, #e76f51, #c84b31);
             border-radius: 18px 18px 6px 6px;
             box-shadow: 0 8px 16px rgba(0,0,0,0.35);
             z-index: 10;
-            /* Transisi pergerakan posisi yang sangat halus dan organik */
             transition: left 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
                         transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
         }
@@ -225,7 +219,6 @@
             box-shadow: inset -2px -2px 0px rgba(0,0,0,0.1);
         }
 
-        /* Efek Langkah Kaki Berjalan (Bobbing Halus) */
         .walking #character {
             animation: walkBob 0.35s ease-in-out infinite alternate;
         }
@@ -234,15 +227,12 @@
             100% { transform: translateY(-7px) rotate(calc(var(--cRot, 0deg) - 2deg)); }
         }
 
-        /* --- STATE POSISI BERDASARKAN JAWABAN --- */
-        /* Start */
+        /* --- STATE POSISI --- */
         #game-container.state-start #character {
             left: 65px;
             --cRot: 0deg;
             transform: translateY(0) rotate(0deg);
         }
-
-        /* Step 1 (Salah 1 / Benar 1) */
         #game-container.state-step1 #character {
             left: 135px;
             --cRot: -4deg;
@@ -251,8 +241,6 @@
         #game-container.state-step1 #bridge-wrapper {
             transform: rotate(-5deg) translateY(8px);
         }
-
-        /* Step 2 (Salah 2) */
         #game-container.state-step2 #character {
             left: 210px;
             --cRot: -12deg;
@@ -261,8 +249,6 @@
         #game-container.state-step2 #bridge-wrapper {
             transform: rotate(-16deg) translateY(22px);
         }
-
-        /* Win (Sukses Sampai Seberang Kanan) */
         #game-container.state-win #character {
             left: 310px;
             --cRot: 0deg;
@@ -277,27 +263,23 @@
             100% { transform: translateY(-14px); }
         }
 
-        /* Fall / Kalah Total (Jembatan Rubuh & Tercebur Mulus) */
         #game-container.state-fall #bridge-wrapper {
             animation: bridgeFallAnim 0.75s forwards cubic-bezier(0.55, 0.08, 0.68, 0.53);
         }
         #game-container.state-fall #character {
             animation: charFallAnim 0.75s forwards cubic-bezier(0.55, 0.08, 0.68, 0.53);
         }
-
         @keyframes bridgeFallAnim {
             0% { transform: rotate(-16deg) translateY(22px); }
             50% { transform: rotate(25deg) translateY(80px); }
             100% { transform: rotate(70deg) translateY(150px); opacity: 0.35; }
         }
-
         @keyframes charFallAnim {
             0% { left: 210px; transform: translateY(-12deg) rotate(-12deg); opacity: 1; }
             40% { left: 235px; transform: translateY(80px) rotate(-45deg); opacity: 1; }
             100% { left: 260px; transform: translateY(170px) scale(0.35) rotate(-90deg); opacity: 0; }
         }
 
-        /* Efek Cipratan Air Indah */
         #splash-effect {
             position: absolute;
             bottom: 45px;
@@ -318,7 +300,7 @@
             100% { transform: scale(2.8); opacity: 0; }
         }
 
-        /* 6. PAPAN SOAL & OPSI JAWABAN (GAYA KAYU KLASIK HANGAT) */
+        /* 6. PAPAN SOAL & OPSI JAWABAN */
         #question-board {
             position: absolute;
             top: 22px;
@@ -336,19 +318,19 @@
         #question-text {
             color: #fffae5;
             font-family: 'Nunito', sans-serif;
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             font-weight: 800;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
         }
 
         #scroll-options {
             position: absolute;
-            top: 110px;
+            top: 115px;
             right: 40px;
             width: 430px;
             background: #fefae0;
             border: 3px solid #dda15e;
-            padding: 22px 20px;
+            padding: 20px;
             border-radius: 16px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.3);
             z-index: 20;
@@ -359,13 +341,13 @@
             background-color: #dda15e;
             color: #283618;
             border: 2px solid #bc6c25;
-            padding: 11px 16px;
-            font-size: 0.94rem;
+            padding: 10px 14px;
+            font-size: 0.9rem;
             font-weight: 700;
             border-radius: 10px;
             cursor: pointer;
             text-align: left;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             width: 100%;
             box-shadow: 0 4px 6px rgba(0,0,0,0.06);
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -377,7 +359,6 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
 
-        /* Kontrol Bawah */
         #controls {
             margin-top: 15px;
             display: flex;
@@ -409,11 +390,8 @@
 <body>
 
     <div id="game-container" class="state-start">
-        <!-- Awan Cat Air -->
         <div class="cloud c-1"></div>
         <div class="cloud c-2"></div>
-
-        <!-- Bukit Hijau & Pohon -->
         <div class="hill-back"></div>
         <div class="hill-front"></div>
         <div class="tree t-left">
@@ -425,12 +403,10 @@
             <div class="leaves"></div>
         </div>
 
-        <!-- Papan Soal -->
         <div id="question-board">
-            <div id="question-text">The tall student studied today. (Pilih jawaban yang benar!)</div>
+            <div id="question-text">Memuat soal dari Google Spreadsheet...</div>
         </div>
 
-        <!-- Jembatan & Karakter -->
         <div id="bridge-wrapper">
             <div class="bridge-arch">
                 <div class="bridge-deck"></div>
@@ -446,53 +422,135 @@
         <div id="character"></div>
         <div id="splash-effect"></div>
 
-        <!-- Sungai Tenang & Shimmer Cahaya -->
         <div class="river-bed">
             <div class="water-shimmer ws-1"></div>
             <div class="water-shimmer ws-2"></div>
         </div>
 
-        <!-- Opsi Jawaban -->
-        <div id="scroll-options">
-            <button class="option-btn" onclick="playAnim('step1')">A. Salah 1x (Maju selangkah, jembatan bergeser halus)</button>
-            <button class="option-btn" onclick="playAnim('step2')">B. Salah 2x (Maju lagi, jembatan miring dramatis)</button>
-            <button class="option-btn" onclick="playAnim('win')">C. Benar! (Karakter sukses menyeberang dengan aman)</button>
-            <button class="option-btn" onclick="playAnim('fall')">D. Salah 3x (Jembatan rubuh & tercebur sinematik)</button>
+        <div id="scroll-options" id="options-container">
+            <!-- Tombol opsi akan dimuat otomatis dari spreadsheet -->
         </div>
     </div>
 
-    <!-- Status & Reset -->
     <div id="controls">
-        <div id="status-msg">Status: Karakter siap menyeberang. Klik salah satu opsi di atas!</div>
-        <button class="reset-btn" onclick="playAnim('start')">Reset Simulasi</button>
+        <div id="status-msg">Status: Menghubungkan ke Spreadsheet API...</div>
+        <button class="reset-btn" onclick="initGame()">Muat Ulang Game</button>
     </div>
 
     <script>
+        // ==========================================
+        // GANTI URL DI BAWAH DENGAN WEB APP URL / API SPREADSHEET KAMU
+        // ==========================================
+        const SPREADSHEET_API_URL = "URL_GOOGLE_SPREADSHEET_API_KAMU_DISINI";
+
+        let questions = [];
+        let currentIndex = 0;
+        let mistakes = 0;
         const container = document.getElementById("game-container");
         const statusMsg = document.getElementById("status-msg");
+        const questionText = document.getElementById("question-text");
+        const optionsContainer = document.getElementById("scroll-options");
 
-        function playAnim(action) {
-            // Hapus kelas animasi jalan dulu
+        async function initGame() {
+            statusMsg.innerText = "Mengambil data soal dari Spreadsheet...";
+            container.className = "state-start";
+            mistakes = 0;
+            currentIndex = 0;
+
+            try {
+                // Jika kamu pakai Google Apps Script Web App, ambil data dengan fetch:
+                const response = await fetch(SPREADSHEET_API_URL);
+                const data = await response.json();
+                
+                // Asumsi data format array dari spreadsheet: [[soal, optA, optB, optC, optD, jawaban], ...]
+                questions = data.map(row => ({
+                    question: row[0],
+                    options: [row[1], row[2], row[3], row[4]],
+                    answer: String(row[5]).trim()
+                }));
+
+                if (questions.length > 0) {
+                    loadQuestion();
+                    statusMsg.innerText = "Status: Jawab pertanyaan dengan benar untuk menyeberang!";
+                } else {
+                    questionText.innerText = "Tidak ada soal ditemukan di Spreadsheet.";
+                }
+            } catch (error) {
+                console.error("Gagal memuat API:", error);
+                // Mode Dummy Cadangan jika API belum di-setup penuh agar animasi tetap bisa dites
+                questions = [
+                    { question: "Contoh Soal 1: Apa bahasa Inggris 'Kucing'?", options: ["Dog", "Cat", "Bird", "Fish"], answer: "Cat" },
+                    { question: "Contoh Soal 2: Manakah yang merupakan bentuk past tense dari 'Go'?", options: ["Gone", "Going", "Went", "Goed"], answer: "Went" }
+                ];
+                loadQuestion();
+                statusMsg.innerText = "⚠️️ Menggunakan Mode Simulasi (Ganti SPREADSHEET_API_URL dengan milikmu).";
+            }
+        }
+
+        function loadQuestion() {
+            if (currentIndex >= questions.length) {
+                // Berhasil menyeberang semua soal!
+                container.className = "state-win walking";
+                questionText.innerText = "🎉 Luar Biasa! Kamu berhasil menjawab semua soal dan menyeberang dengan selamat!";
+                optionsContainer.innerHTML = `<button class="option-btn" onclick="initGame()">Mainkan Lagi</button>`;
+                statusMsg.innerText = "Status: Kemenangan diraih!";
+                return;
+            }
+
+            const q = questions[currentIndex];
+            questionText.innerText = `(${currentIndex + 1}/${questions.length}) ${q.question}`;
+            optionsContainer.innerHTML = "";
+
+            q.options.forEach(opt => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(opt, q.answer);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selected, correct) {
             container.classList.remove("walking");
             void container.offsetWidth; // Trigger reflow
 
-            if (action === 'start') {
-                container.className = "state-start";
-                statusMsg.innerText = "Simulasi direset. Karakter kembali ke posisi awal.";
-            } else if (action === 'step1') {
-                container.className = "state-step1 walking";
-                statusMsg.innerText = "❌ Kurang tepat: Karakter berjalan maju, jembatan mulai miring perlahan.";
-            } else if (action === 'step2') {
-                container.className = "state-step2 walking";
-                statusMsg.innerText = "❌ Hampir celaka: Karakter melangkah lagi, jembatan miring tajam!";
-            } else if (action === 'win') {
-                container.className = "state-win walking";
-                statusMsg.innerText = "🎉 Yeay! Karakter berhasil menyeberang jembatan dengan selamat!";
-            } else if (action === 'fall') {
-                container.className = "state-fall";
-                statusMsg.innerText = "💥 Jembatan patah dan rubuh! Karakter tercebur dengan mulus ke sungai.";
+            // Cek kecocokan jawaban (bisa teks atau huruf pilihan)
+            const isCorrect = (selected.trim().toLowerCase() === correct.toLowerCase());
+
+            if (isCorrect) {
+                currentIndex++;
+                if (mistakes === 0) {
+                    container.className = "state-step1 walking";
+                } else {
+                    container.className = "state-win walking";
+                }
+                statusMsg.innerText = "✨ Benar! Karakter melangkah maju dengan mulus.";
+                setTimeout(() => {
+                    loadQuestion();
+                }, 900);
+            } else {
+                mistakes++;
+                if (mistakes === 1) {
+                    container.className = "state-step1 walking";
+                    statusMsg.innerText = "❌ Kurang tepat: Jembatan mulai miring perlahan.";
+                } else if (mistakes === 2) {
+                    container.className = "state-step2 walking";
+                    statusMsg.innerText = "❌ Hampir celaka: Jembatan miring tajam!";
+                } else {
+                    container.className = "state-fall";
+                    statusMsg.innerText = "💥 Jembatan rubuh! Karakter tercebur ke sungai.";
+                    optionsContainer.innerHTML = `<button class="option-btn" onclick="initGame()">Coba Lagi</button>`;
+                    return;
+                }
+                currentIndex++;
+                setTimeout(() => {
+                    loadQuestion();
+                }, 900);
             }
         }
+
+        // Jalankan game saat halaman dimuat
+        window.onload = initGame;
     </script>
 </body>
 </html>
