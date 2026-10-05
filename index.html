@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Think or Sink - Ghibli Masterpiece Edition</title>
-    <!-- Google Fonts: Ghibli Vibe -->
+    <title>Think or Sink - Ghibli Cinematic Edition</title>
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -15,7 +15,7 @@
 
         body {
             font-family: 'Quicksand', sans-serif;
-            background-color: #0b1329;
+            background-color: #070b19;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -24,312 +24,312 @@
             overflow: hidden;
         }
 
-        /* --- CONTAINER UTAMA (Gaya Ghibli World) --- */
+        /* --- CONTAINER UTAMA --- */
         #game-container {
             position: relative;
             width: 900px;
             height: 550px;
-            background: linear-gradient(to bottom, #7fc1bb, #d8f3dc);
-            border: 6px solid #2d312e;
+            background: linear-gradient(180deg, #88d4bc 0%, #b4f0dc 60%, #e2fceb 100%);
+            border: 6px solid #232924;
             border-radius: 24px;
             overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
         }
 
-        /* 1. AWAN CAT AIR BERGERAK HALUS */
-        .ghibli-cloud {
+        /* 1. AWAN CAT AIR HALUS & BERLAPIS */
+        .cloud {
             position: absolute;
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.85);
             border-radius: 120px;
-            filter: blur(1px);
-            animation: floatCloud linear infinite;
+            filter: blur(0.5px);
+            animation: driftCloud linear infinite;
             z-index: 1;
         }
-        .ghibli-cloud::before, .ghibli-cloud::after {
+        .cloud::before, .cloud::after {
             content: '';
             position: absolute;
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.85);
             border-radius: 50%;
         }
-        .gc-1 { width: 160px; height: 45px; top: 35px; left: -180px; animation-duration: 50s; }
-        .gc-1::before { width: 60px; height: 60px; top: -30px; left: 25px; }
-        .gc-1::after { width: 80px; height: 80px; top: -45px; left: 70px; }
+        .c-1 { width: 180px; height: 50px; top: 30px; left: -200px; animation-duration: 55s; }
+        .c-1::before { width: 70px; height: 70px; top: -35px; left: 30px; }
+        .c-1::after { width: 90px; height: 90px; top: -50px; left: 80px; }
 
-        .gc-2 { width: 110px; height: 35px; top: 90px; left: -220px; animation-duration: 38s; animation-delay: 12s; }
-        .gc-2::before { width: 45px; height: 45px; top: -22px; left: 18px; }
-        .gc-2::after { width: 55px; height: 55px; top: -32px; left: 42px; }
+        .c-2 { width: 130px; height: 40px; top: 95px; left: -250px; animation-duration: 40s; animation-delay: 15s; }
+        .c-2::before { width: 50px; height: 50px; top: -25px; left: 20px; }
+        .c-2::after { width: 65px; height: 65px; top: -35px; left: 50px; }
 
-        @keyframes floatCloud {
+        @keyframes driftCloud {
             0% { transform: translateX(0); }
-            100% { transform: translateX(1150px); }
+            100% { transform: translateX(1200px); }
         }
 
-        /* 2. BUKIT HIJAU BERLAPIS ALA PEDESAAN GHIBLI */
-        .hill-far {
+        /* 2. BUKIT HIJAU & RUMPUT BERTERURAI ESTETIK */
+        .hill-back {
             position: absolute;
             bottom: 160px;
-            left: -80px;
-            width: 1050px;
+            left: -60px;
+            width: 1020px;
             height: 280px;
-            background: #608c56;
+            background: #588157;
             border-radius: 50% 50% 0 0;
             z-index: 2;
-            opacity: 0.85;
+            box-shadow: inset 0 20px 20px rgba(0,0,0,0.1);
         }
-        .hill-near {
+        .hill-front {
             position: absolute;
-            bottom: 125px;
-            right: -120px;
+            bottom: 120px;
+            right: -100px;
             width: 750px;
-            height: 240px;
-            background: #4d7c3f;
+            height: 250px;
+            background: #3a5a40;
             border-radius: 50% 50% 0 0;
             z-index: 2;
         }
 
-        /* Pohon Rimbun Estetik */
-        .ghibli-tree {
+        /* Pohon Khas Ghibli */
+        .tree {
             position: absolute;
-            bottom: 215px;
+            bottom: 210px;
             z-index: 3;
         }
         .trunk {
-            width: 18px;
-            height: 65px;
-            background: #5c4033;
+            width: 20px;
+            height: 70px;
+            background: #4a3525;
             margin: 0 auto;
             border-radius: 6px;
         }
         .leaves {
-            width: 95px;
-            height: 105px;
-            background: #2b4d27;
+            width: 105px;
+            height: 115px;
+            background: #283618;
             border-radius: 50%;
             position: absolute;
-            top: -60px;
-            left: -38px;
-            box-shadow: inset -10px -10px 0px rgba(0,0,0,0.2);
+            top: -65px;
+            left: -42px;
+            box-shadow: inset -12px -12px 0px rgba(0,0,0,0.25);
         }
-        .gt-1 { left: 90px; }
-        .gt-2 { right: 70px; bottom: 240px; transform: scale(0.75); }
+        .t-left { left: 80px; }
+        .t-right { right: 70px; bottom: 250px; transform: scale(0.8); }
 
-        /* 3. SUNGAI TENANG, DAMAI, DAN ARUS SANGAT HALUS */
+        /* 3. SUNGAI TENANG, BERKILAU & ARUS SANGAT HALUS */
         .river-bed {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 155px;
-            background: linear-gradient(to bottom, #2a9d8f, #264653);
+            height: 150px;
+            background: linear-gradient(180deg, #1d6f73 0%, #114b5f 50%, #0b2545 100%);
             z-index: 4;
             overflow: hidden;
-            border-top: 4px solid #8ab17d;
+            border-top: 4px solid #70af85;
         }
 
-        .water-wave {
+        /* Efek Pantulan Cahaya di Air (Shimmer) */
+        .water-shimmer {
             position: absolute;
             width: 200%;
             height: 100%;
             background-repeat: repeat-x;
         }
-        /* Durasi diperlambat drastis jadi 12s & 16s agar arusnya tenang banget */
-        .ww-1 {
-            background: radial-gradient(circle, #48cae4 10%, transparent 11%);
-            background-size: 50px 25px;
-            top: 10px;
-            opacity: 0.4;
-            animation: waterFlowSlow1 12s linear infinite;
+        .ws-1 {
+            background: radial-gradient(circle, rgba(255,255,255,0.4) 10%, transparent 11%);
+            background-size: 60px 30px;
+            top: 12px;
+            animation: flowWater 14s linear infinite;
         }
-        .ww-2 {
-            background: radial-gradient(circle, #ade8f4 8%, transparent 9%);
-            background-size: 70px 35px;
-            top: 25px;
-            opacity: 0.25;
-            animation: waterFlowSlow2 16s linear infinite;
+        .ws-2 {
+            background: radial-gradient(circle, rgba(143,243,212,0.3) 8%, transparent 9%);
+            background-size: 80px 40px;
+            top: 35px;
+            animation: flowWater 18s linear infinite reverse;
         }
-        @keyframes waterFlowSlow1 {
+        @keyframes flowWater {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
-        @keyframes waterFlowSlow2 {
-            0% { transform: translateX(-50%); }
-            100% { transform: translateX(0); }
-        }
 
-        /* 4. JEMBATAN KAYU LENGKUNG KLASIK */
+        /* 4. JEMBATAN KAYU LENGKUNG KLASIK (TRANSISI SUPER MULUS) */
         #bridge-wrapper {
             position: absolute;
-            bottom: 85px;
-            left: 140px;
-            width: 290px;
-            height: 115px;
+            bottom: 82px;
+            left: 135px;
+            width: 300px;
+            height: 120px;
             z-index: 5;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
             transform-origin: left bottom;
         }
 
-        .classic-arch {
+        .bridge-arch {
             position: absolute;
             width: 100%;
             height: 100%;
         }
-        .arch-deck {
+        .bridge-deck {
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 72px;
-            background: #8d5b4c;
+            height: 75px;
+            background: #7f4f24;
             border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-            border-top: 6px solid #d4a373;
-            box-shadow: 0 12px 20px rgba(0,0,0,0.35);
+            border-top: 6px solid #dda15e;
+            box-shadow: 0 15px 25px rgba(0,0,0,0.4);
         }
-        .arch-rail {
+        .bridge-rail {
             position: absolute;
             top: -16px;
             width: 100%;
-            height: 42px;
-            border-top: 5px solid #582f1d;
+            height: 45px;
+            border-top: 5px solid #432818;
         }
-        .p-post {
+        .rail-pillar {
             position: absolute;
-            width: 8px;
-            height: 48px;
-            background: #582f1d;
+            width: 9px;
+            height: 50px;
+            background: #432818;
             bottom: 0;
             border-radius: 3px;
         }
-        .pp1 { left: 12px; }
-        .pp2 { left: 82px; height: 55px; top: -7px; }
-        .pp3 { left: 142px; height: 58px; top: -10px; }
-        .pp4 { left: 202px; height: 55px; top: -7px; }
-        .pp5 { left: 270px; }
+        .rp1 { left: 15px; }
+        .rp2 { left: 88px; height: 58px; top: -8px; }
+        .rp3 { left: 150px; height: 62px; top: -12px; }
+        .rp4 { left: 212px; height: 58px; top: -8px; }
+        .rp5 { left: 280px; }
 
-        /* Karakter Ghibli dengan Animasi Jalan di Atas Jembatan */
+        /* 5. KARAKTER ANIMASI MULUS (CINEMATIC WALKING & IDLE) */
         #character {
             position: absolute;
-            bottom: 98px;
-            left: 70px; /* Posisi awal di seberang kiri */
-            width: 38px;
-            height: 58px;
-            background: linear-gradient(135deg, #e76f51, #d44d31);
-            border-radius: 16px 16px 6px 6px;
-            box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+            bottom: 95px;
+            left: 65px; /* Posisi awal di luar jembatan (kiri) */
+            width: 40px;
+            height: 60px;
+            background: linear-gradient(135deg, #e76f51, #c84b31);
+            border-radius: 18px 18px 6px 6px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.35);
             z-index: 10;
-            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            /* Transisi pergerakan posisi yang sangat halus dan organik */
+            transition: left 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
+                        transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
         }
         #character::after {
             content: '';
             position: absolute;
-            top: -11px;
-            left: 7px;
+            top: -12px;
+            left: 8px;
             width: 24px;
             height: 24px;
             background: #ffecd1;
             border-radius: 50%;
+            box-shadow: inset -2px -2px 0px rgba(0,0,0,0.1);
         }
 
-        /* --- STATE POSISI & ANIMASI KARAKTER & JEMBATAN --- */
-        /* Posisi Start / Reset */
-        #game-container.pos-start #character {
-            left: 70px;
+        /* Efek Langkah Kaki Berjalan (Bobbing Halus) */
+        .walking #character {
+            animation: walkBob 0.35s ease-in-out infinite alternate;
+        }
+        @keyframes walkBob {
+            0% { transform: translateY(0) rotate(var(--cRot, 0deg)); }
+            100% { transform: translateY(-7px) rotate(calc(var(--cRot, 0deg) - 2deg)); }
+        }
+
+        /* --- STATE POSISI BERDASARKAN JAWABAN --- */
+        /* Start */
+        #game-container.state-start #character {
+            left: 65px;
+            --cRot: 0deg;
             transform: translateY(0) rotate(0deg);
         }
 
-        /* Posisi Maju 1 (Benar 1 / Salah 1) */
-        #game-container.pos-step1 #character {
-            left: 140px;
-            transform: translateY(-8px) rotate(-3deg);
-            animation: walkBounce 0.4s ease infinite alternate;
+        /* Step 1 (Salah 1 / Benar 1) */
+        #game-container.state-step1 #character {
+            left: 135px;
+            --cRot: -4deg;
+            transform: translateY(-5deg) rotate(-4deg);
         }
-        #game-container.pos-step1 #bridge-wrapper {
-            transform: rotate(-4deg) translateY(6px);
+        #game-container.state-step1 #bridge-wrapper {
+            transform: rotate(-5deg) translateY(8px);
         }
 
-        /* Posisi Maju 2 (Benar 2 / Salah 2) */
-        #game-container.pos-step2 #character {
+        /* Step 2 (Salah 2) */
+        #game-container.state-step2 #character {
             left: 210px;
-            transform: translateY(-15px) rotate(-8deg);
-            animation: walkBounce 0.4s ease infinite alternate;
+            --cRot: -12deg;
+            transform: translateY(-12deg) rotate(-12deg);
         }
-        #game-container.pos-step2 #bridge-wrapper {
-            transform: rotate(-14deg) translateY(20px);
+        #game-container.state-step2 #bridge-wrapper {
+            transform: rotate(-16deg) translateY(22px);
         }
 
-        /* Posisi Sukses / Menang di Seberang Kanan */
-        #game-container.pos-win #character {
-            left: 285px;
+        /* Win (Sukses Sampai Seberang Kanan) */
+        #game-container.state-win #character {
+            left: 310px;
+            --cRot: 0deg;
             transform: translateY(0) rotate(0deg);
-            animation: celebrateJump 0.6s ease infinite alternate;
+            animation: victoryJump 0.5s ease infinite alternate;
         }
-        #game-container.pos-win #bridge-wrapper {
+        #game-container.state-win #bridge-wrapper {
             transform: rotate(0deg) translateY(0);
         }
-
-        /* Animasi Langkah Kaki Menggemaskan */
-        @keyframes walkBounce {
-            0% { transform: translateY(var(--ty, 0)) rotate(var(--rot, 0deg)) translateY(0); }
-            100% { transform: translateY(var(--ty, 0)) rotate(var(--rot, 0deg)) translateY(-6px); }
-        }
-
-        /* Animasi Lompat Menang */
-        @keyframes celebrateJump {
+        @keyframes victoryJump {
             0% { transform: translateY(0); }
-            100% { transform: translateY(-12px); }
+            100% { transform: translateY(-14px); }
         }
 
-        /* State Kalah Total (Rubuh & Tercebur) */
-        #game-container.pos-fall #bridge-wrapper {
-            animation: bridgeCollapseGhibli 0.7s forwards ease-in;
+        /* Fall / Kalah Total (Jembatan Rubuh & Tercebur Mulus) */
+        #game-container.state-fall #bridge-wrapper {
+            animation: bridgeFallAnim 0.75s forwards cubic-bezier(0.55, 0.08, 0.68, 0.53);
         }
-        #game-container.pos-fall #character {
-            animation: charFallGhibli 0.7s forwards ease-in;
-        }
-
-        @keyframes bridgeCollapseGhibli {
-            0% { transform: rotate(-22deg) translateY(35px); }
-            50% { transform: rotate(35deg) translateY(90px); }
-            100% { transform: rotate(75deg) translateY(165px); opacity: 0.3; }
+        #game-container.state-fall #character {
+            animation: charFallAnim 0.75s forwards cubic-bezier(0.55, 0.08, 0.68, 0.53);
         }
 
-        @keyframes charFallGhibli {
-            0% { left: 210px; transform: translateY(35px) rotate(-22deg); opacity: 1; }
-            40% { left: 230px; transform: translateY(100px) rotate(-50deg); opacity: 1; }
-            100% { left: 250px; transform: translateY(185px) scale(0.3) rotate(-90deg); opacity: 0; }
+        @keyframes bridgeFallAnim {
+            0% { transform: rotate(-16deg) translateY(22px); }
+            50% { transform: rotate(25deg) translateY(80px); }
+            100% { transform: rotate(70deg) translateY(150px); opacity: 0.35; }
         }
 
-        /* Efek Percikan Air Magis */
-        #splash {
+        @keyframes charFallAnim {
+            0% { left: 210px; transform: translateY(-12deg) rotate(-12deg); opacity: 1; }
+            40% { left: 235px; transform: translateY(80px) rotate(-45deg); opacity: 1; }
+            100% { left: 260px; transform: translateY(170px) scale(0.35) rotate(-90deg); opacity: 0; }
+        }
+
+        /* Efek Cipratan Air Indah */
+        #splash-effect {
             position: absolute;
-            bottom: 48px;
-            left: 230px;
-            width: 85px;
-            height: 42px;
+            bottom: 45px;
+            left: 240px;
+            width: 90px;
+            height: 45px;
             background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 70%);
             border-radius: 50%;
             opacity: 0;
             z-index: 12;
             pointer-events: none;
         }
-        #game-container.pos-fall #splash {
-            animation: splashMagic 0.5s 0.3s forwards ease-out;
+        #game-container.state-fall #splash-effect {
+            animation: splashBurst 0.6s 0.3s forwards ease-out;
         }
-        @keyframes splashMagic {
+        @keyframes splashBurst {
             0% { transform: scale(0.2); opacity: 1; }
-            100% { transform: scale(2.6); opacity: 0; }
+            100% { transform: scale(2.8); opacity: 0; }
         }
 
-        /* 5. PAPAN SOAL & OPSI JAWABAN */
+        /* 6. PAPAN SOAL & OPSI JAWABAN (GAYA KAYU KLASIK HANGAT) */
         #question-board {
             position: absolute;
-            top: 25px;
+            top: 22px;
             left: 50%;
             transform: translateX(-50%);
-            width: 680px;
-            background: linear-gradient(to bottom, #9c6644, #7f4f24);
+            width: 700px;
+            background: linear-gradient(180deg, #9c6644 0%, #7f4f24 100%);
             border: 4px solid #381d0a;
             padding: 14px 25px;
-            border-radius: 14px;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.35);
+            border-radius: 16px;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
             text-align: center;
             z-index: 20;
         }
@@ -344,13 +344,13 @@
         #scroll-options {
             position: absolute;
             top: 110px;
-            right: 45px;
-            width: 420px;
+            right: 40px;
+            width: 430px;
             background: #fefae0;
             border: 3px solid #dda15e;
-            padding: 25px 20px;
-            border-radius: 14px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+            padding: 22px 20px;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
             z-index: 20;
         }
 
@@ -360,7 +360,7 @@
             color: #283618;
             border: 2px solid #bc6c25;
             padding: 11px 16px;
-            font-size: 0.95rem;
+            font-size: 0.94rem;
             font-weight: 700;
             border-radius: 10px;
             cursor: pointer;
@@ -368,12 +368,13 @@
             margin-bottom: 10px;
             width: 100%;
             box-shadow: 0 4px 6px rgba(0,0,0,0.06);
-            transition: all 0.2s;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .option-btn:hover {
             background-color: #bc6c25;
             color: #ffffff;
-            transform: translateX(4px);
+            transform: translateX(6px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
 
         /* Kontrol Bawah */
@@ -397,55 +398,101 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: 700;
+            transition: background 0.2s;
+        }
+        .reset-btn:hover {
+            background-color: #bc6c25;
+            color: white;
         }
     </style>
 </head>
 <body>
 
-    <div id="game-container" class="pos-start">
-        <!-- Awan Cat Air Ghibli -->
-        <div class="ghibli-cloud gc-1"></div>
-        <div class="ghibli-cloud gc-2"></div>
+    <div id="game-container" class="state-start">
+        <!-- Awan Cat Air -->
+        <div class="cloud c-1"></div>
+        <div class="cloud c-2"></div>
 
-        <!-- Bukit Hijau Teduh & Pohon -->
-        <div class="hill-far"></div>
-        <div class="hill-near"></div>
-        <div class="ghibli-tree gt-1">
+        <!-- Bukit Hijau & Pohon -->
+        <div class="hill-back"></div>
+        <div class="hill-front"></div>
+        <div class="tree t-left">
             <div class="trunk"></div>
             <div class="leaves"></div>
         </div>
-        <div class="ghibli-tree gt-2">
+        <div class="tree t-right">
             <div class="trunk"></div>
             <div class="leaves"></div>
         </div>
 
-        <!-- Papan Soal di Atas -->
+        <!-- Papan Soal -->
         <div id="question-board">
             <div id="question-text">The tall student studied today. (Pilih jawaban yang benar!)</div>
         </div>
 
-        <!-- Jembatan Lengkung Klasik & Karakter -->
+        <!-- Jembatan & Karakter -->
         <div id="bridge-wrapper">
-            <div class="classic-arch">
-                <div class="arch-deck"></div>
-                <div class="arch-rail">
-                    <div class="p-post pp1"></div>
-                    <div class="p-post pp2"></div>
-                    <div class="p-post pp3"></div>
-                    <div class="p-post pp4"></div>
-                    <div class="p-post pp5"></div>
+            <div class="bridge-arch">
+                <div class="bridge-deck"></div>
+                <div class="bridge-rail">
+                    <div class="rail-pillar rp1"></div>
+                    <div class="rail-pillar rp2"></div>
+                    <div class="rail-pillar rp3"></div>
+                    <div class="rail-pillar rp4"></div>
+                    <div class="rail-pillar rp5"></div>
                 </div>
             </div>
         </div>
         <div id="character"></div>
-        <div id="splash"></div>
+        <div id="splash-effect"></div>
 
-        <!-- Sungai Tenang & Damai -->
+        <!-- Sungai Tenang & Shimmer Cahaya -->
         <div class="river-bed">
-            <div class="water-wave ww-1"></div>
-            <div class="water-wave ww-2"></div>
+            <div class="water-shimmer ws-1"></div>
+            <div class="water-shimmer ws-2"></div>
         </div>
 
-        <!-- Kotak Opsi Jawaban -->
+        <!-- Opsi Jawaban -->
         <div id="scroll-options">
-            <button
+            <button class="option-btn" onclick="playAnim('step1')">A. Salah 1x (Maju selangkah, jembatan bergeser halus)</button>
+            <button class="option-btn" onclick="playAnim('step2')">B. Salah 2x (Maju lagi, jembatan miring dramatis)</button>
+            <button class="option-btn" onclick="playAnim('win')">C. Benar! (Karakter sukses menyeberang dengan aman)</button>
+            <button class="option-btn" onclick="playAnim('fall')">D. Salah 3x (Jembatan rubuh & tercebur sinematik)</button>
+        </div>
+    </div>
+
+    <!-- Status & Reset -->
+    <div id="controls">
+        <div id="status-msg">Status: Karakter siap menyeberang. Klik salah satu opsi di atas!</div>
+        <button class="reset-btn" onclick="playAnim('start')">Reset Simulasi</button>
+    </div>
+
+    <script>
+        const container = document.getElementById("game-container");
+        const statusMsg = document.getElementById("status-msg");
+
+        function playAnim(action) {
+            // Hapus kelas animasi jalan dulu
+            container.classList.remove("walking");
+            void container.offsetWidth; // Trigger reflow
+
+            if (action === 'start') {
+                container.className = "state-start";
+                statusMsg.innerText = "Simulasi direset. Karakter kembali ke posisi awal.";
+            } else if (action === 'step1') {
+                container.className = "state-step1 walking";
+                statusMsg.innerText = "❌ Kurang tepat: Karakter berjalan maju, jembatan mulai miring perlahan.";
+            } else if (action === 'step2') {
+                container.className = "state-step2 walking";
+                statusMsg.innerText = "❌ Hampir celaka: Karakter melangkah lagi, jembatan miring tajam!";
+            } else if (action === 'win') {
+                container.className = "state-win walking";
+                statusMsg.innerText = "🎉 Yeay! Karakter berhasil menyeberang jembatan dengan selamat!";
+            } else if (action === 'fall') {
+                container.className = "state-fall";
+                statusMsg.innerText = "💥 Jembatan patah dan rubuh! Karakter tercebur dengan mulus ke sungai.";
+            }
+        }
+    </script>
+</body>
+</html>
