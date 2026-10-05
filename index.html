@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Think or Sink - Canva Style Animated</title>
-    <!-- Google Fonts: Fredoka untuk Soal, Lexend untuk UI -->
+    <title>Think or Sink - Aesthetic Edition</title>
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -15,7 +15,7 @@
 
         body {
             font-family: 'Lexend', sans-serif;
-            background-color: #1e293b;
+            background-color: #0f172a;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -24,159 +24,136 @@
             overflow: hidden;
         }
 
-        /* --- CONTAINER UTAMA (Gaya Ilustrasi Pemandangan Canva) --- */
+        /* --- CONTAINER UTAMA GAME --- */
         #game-container {
             position: relative;
             width: 900px;
             height: 550px;
-            background: linear-gradient(to bottom, #d4f0f0, #a2ded0);
-            border: 6px solid #5c3a21; /* Bingkai kayu ala Canva */
-            border-radius: 16px;
+            background: #73c2fb;
+            border: 6px solid #3b2219;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
 
-        /* Latar Belakang Tebing & Pepohonan Kiri-Kanan */
-        .scenery-left-cliff {
+        /* 1. BACKGROUND PEMANDANGAN PADANG RUMPUT & POHON */
+        .scenery-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://i.ibb.co.com/6c4w94Z/landscape-green-hills-trees.jpg'); /* Referensi dari gambar pemandanganmu */
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+
+        /* 2. AWAN BERGERAK LEMBUT DI LANGIT */
+        .clouds-layer {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 45%;
+            background-image: url('https://i.ibb.co.com/84407bK/clouds-transparent.png'); /* Pola awan transparan */
+            background-repeat: repeat-x;
+            background-size: contain;
+            opacity: 0.8;
+            animation: moveClouds 40s linear infinite;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        @keyframes moveClouds {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(50%); }
+        }
+
+        /* 3. SUNGAI & GELOMBANG AIR BERLAPIS */
+        .river-section {
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 250px;
-            height: 300px;
-            background: linear-gradient(135deg, #4a7c59, #2d5a3f);
-            border-top-right-radius: 150px;
-            z-index: 2;
-        }
-        .scenery-right-shore {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 450px;
-            height: 350px;
-            background: linear-gradient(225deg, #e3d5b8, #c2b292);
-            border-top-left-radius: 200px;
-            z-index: 2;
-        }
-        /* Detail Pohon/Semak ala Canva di kanan */
-        .bush-1 {
-            position: absolute;
-            bottom: 250px;
-            right: 100px;
-            width: 120px;
-            height: 120px;
-            background: #386641;
-            border-radius: 50%;
-            z-index: 3;
-        }
-        .bush-2 {
-            position: absolute;
-            bottom: 230px;
-            right: 40px;
-            width: 100px;
-            height: 100px;
-            background: #2a472d;
-            border-radius: 50%;
-            z-index: 3;
-        }
-
-        /* Aliran Sungai di Bawah */
-        .river-container {
-            position: absolute;
-            bottom: 0;
             width: 100%;
             height: 160px;
-            background: linear-gradient(to bottom, #3b82f6, #1d4ed8);
-            z-index: 4;
+            background: linear-gradient(to bottom, #2563eb, #1d4ed8);
+            z-index: 3;
             overflow: hidden;
             border-top: 4px solid #60a5fa;
         }
-        .river-wave {
+
+        .wave-layer {
             position: absolute;
+            bottom: 0;
+            left: 0;
             width: 200%;
             height: 100%;
-            background: repeating-linear-gradient(
-                45deg,
-                transparent,
-                transparent 25px,
-                rgba(255, 255, 255, 0.15) 25px,
-                rgba(255, 255, 255, 0.15) 50px
-            );
-            animation: riverFlow 4s linear infinite;
-        }
-        @keyframes riverFlow {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-70px); }
+            background-repeat: repeat-x;
+            background-position: bottom;
         }
 
-        /* --- JEMBATAN GANTUNG & KARAKTER (BERANIMASI) --- */
-        #bridge-area {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
+        /* Menggunakan gaya gelombang berlapis mirip referensi ombak kecilmu */
+        .wave-1 {
+            background-image: url('https://i.ibb.co.com/1n61x6V/wave-blue-1.png');
+            background-size: 600px 70px;
+            animation: waveMotion1 5s linear infinite;
+            opacity: 0.7;
+            z-index: 4;
+        }
+        .wave-2 {
+            background-image: url('https://i.ibb.co.com/2s0tq5S/wave-blue-2.png');
+            background-size: 500px 60px;
+            animation: waveMotion2 3.5s linear infinite;
+            opacity: 0.9;
             z-index: 5;
-            transition: all 0.6s ease-in-out;
         }
 
-        /* Tiang Kayu Jembatan Kiri & Kanan */
-        .bridge-tower-left {
-            position: absolute;
-            bottom: 130px;
-            left: 140px;
-            width: 25px;
-            height: 140px;
-            background: #8b5a2b;
-            border: 2px solid #5c3a21;
-            border-radius: 4px;
+        @keyframes waveMotion1 {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
-        .bridge-tower-right {
-            position: absolute;
-            bottom: 130px;
-            left: 380px;
-            width: 25px;
-            height: 140px;
-            background: #8b5a2b;
-            border: 2px solid #5c3a21;
-            border-radius: 4px;
+        @keyframes waveMotion2 {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
         }
 
-        /* Papan Jembatan & Tali */
-        .bridge-deck {
+        /* 4. JEMBATAN LENGKUNG KAYU & KARAKTER BERANIMASI */
+        #bridge-wrapper {
             position: absolute;
-            bottom: 210px;
-            left: 150px;
-            width: 240px;
-            height: 20px;
-            background: #a0522d;
-            border: 2px solid #5c3a21;
-            border-radius: 4px;
-            transform-origin: left center;
-            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            bottom: 90px;
+            left: 120px;
+            width: 320px;
+            height: 180px;
+            z-index: 6;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: left bottom;
         }
-        .bridge-rope-top {
+
+        /* Gambar Jembatan Lengkung Kayu Custom */
+        .bridge-img {
             position: absolute;
-            bottom: 230px;
-            left: 150px;
-            width: 240px;
-            height: 4px;
-            background: #d4a373;
-            border-radius: 2px;
-            transition: all 0.5s ease-in-out;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            pointer-events: none;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3));
         }
 
         /* Karakter di atas jembatan */
         #character {
             position: absolute;
-            bottom: 235px;
-            left: 240px;
+            bottom: 95px;
+            left: 140px;
             width: 45px;
             height: 65px;
-            background: #e63946;
+            background: linear-gradient(135deg, #f43f5e, #e11d48);
             border-radius: 20px 20px 6px 6px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            z-index: 6;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            z-index: 10;
+            transition: all 0.5s ease;
+            animation: characterIdle 2s ease-in-out infinite;
         }
         #character::after {
             content: '';
@@ -185,115 +162,112 @@
             left: 10px;
             width: 24px;
             height: 24px;
-            background: #f1faee;
+            background: #fecdd3;
             border-radius: 50%;
+        }
+
+        @keyframes characterIdle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
         }
 
         /* --- STAGE KERUSAKAN JEMBATAN --- */
-        #bridge-area.stage-1 .bridge-rope-top {
-            transform: rotate(-10deg) translateY(10px);
-            opacity: 0.4;
-            border-style: dashed;
+        #bridge-wrapper.stage-1 {
+            transform: rotate(-6deg) translateY(10px);
+            opacity: 0.9;
         }
-        #bridge-area.stage-1 .bridge-deck {
-            transform: rotate(-8deg) translateY(12px);
-        }
-        #bridge-area.stage-1 #character {
-            transform: translateY(12px) rotate(-8deg);
+        #bridge-wrapper.stage-1 #character {
+            transform: translateY(10px) rotate(-6deg);
+            animation: none;
         }
 
-        #bridge-area.stage-2 .bridge-rope-top {
-            opacity: 0;
+        #bridge-wrapper.stage-2 {
+            transform: rotate(-20deg) translateY(35px);
         }
-        #bridge-area.stage-2 .bridge-deck {
-            transform: rotate(-25deg) translateY(35px);
-            background: #6f1d1b;
-        }
-        #bridge-area.stage-2 #character {
-            transform: translateY(35px) rotate(-25deg);
+        #bridge-wrapper.stage-2 #character {
+            transform: translateY(35px) rotate(-20deg);
+            animation: panicShake 0.25s infinite;
         }
 
-        #bridge-area.stage-3 .bridge-deck {
-            animation: bridgeFall 0.7s forwards ease-in;
-        }
-        #bridge-area.stage-3 #character {
-            animation: charFall 0.7s forwards ease-in;
+        @keyframes panicShake {
+            0%, 100% { transform: translateY(35px) rotate(-20deg) translateX(0); }
+            50% { transform: translateY(35px) rotate(-20deg) translateX(-3px); }
         }
 
-        @keyframes bridgeFall {
-            0% { transform: rotate(-25deg) translateY(35px); }
-            50% { transform: rotate(30deg) translateY(80px); }
-            100% { transform: rotate(75deg) translateY(140px); opacity: 0.5; }
+        #bridge-wrapper.stage-3 {
+            animation: bridgeCollapse 0.7s forwards ease-in;
+        }
+        #bridge-wrapper.stage-3 #character {
+            animation: characterFall 0.7s forwards ease-in;
         }
 
-        @keyframes charFall {
-            0% { transform: translateY(35px) rotate(-25deg); opacity: 1; }
-            40% { transform: translateY(90px) rotate(-50deg); opacity: 1; }
-            100% { transform: translateY(160px) scale(0.3) rotate(-90deg); opacity: 0; }
+        @keyframes bridgeCollapse {
+            0% { transform: rotate(-20deg) translateY(35px); }
+            50% { transform: rotate(35deg) translateY(90px); }
+            100% { transform: rotate(75deg) translateY(160px); opacity: 0.4; }
+        }
+
+        @keyframes characterFall {
+            0% { transform: translateY(35px) rotate(-20deg); opacity: 1; }
+            40% { transform: translateY(100px) rotate(-50deg); opacity: 1; }
+            100% { transform: translateY(180px) scale(0.3) rotate(-90deg); opacity: 0; }
         }
 
         /* Efek Splash Air */
-        #splash-effect {
+        #splash {
             position: absolute;
-            bottom: 90px;
-            left: 260px;
-            width: 80px;
-            height: 40px;
-            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%);
+            bottom: 60px;
+            left: 240px;
+            width: 90px;
+            height: 45px;
+            background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 70%);
             border-radius: 50%;
             opacity: 0;
-            z-index: 7;
+            z-index: 12;
             pointer-events: none;
         }
-        #bridge-area.stage-3 #splash-effect {
+        #bridge-wrapper.stage-3 ~ #splash {
             animation: splashAnim 0.5s 0.3s forwards ease-out;
         }
         @keyframes splashAnim {
-            0% { transform: scale(0.3); opacity: 1; }
-            100% { transform: scale(2.4); opacity: 0; }
+            0% { transform: scale(0.2); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
         }
 
-        /* --- PAPAN SOAL DI ATAS (Gaya Kayu Canva) --- */
+        /* 5. PAPAN SOAL & OPSI JAWABAN (GAYA ESTETIK) */
         #question-board {
             position: absolute;
             top: 25px;
             left: 50%;
             transform: translateX(-50%);
-            width: 650px;
-            background: linear-gradient(to bottom, #b06528, #8b4513);
+            width: 680px;
+            background: linear-gradient(to bottom, #b86b30, #8a4718);
             border: 4px solid #4a2511;
-            padding: 15px 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            padding: 14px 25px;
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.35);
             text-align: center;
-            z-index: 10;
+            z-index: 20;
         }
         #question-text {
             color: #ffffff;
             font-family: 'Fredoka', cursive;
             font-size: 1.2rem;
             font-weight: 600;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
         }
 
-        /* --- KERTAS GULUNG / SCROLL OPSI JAWABAN DI KANAN --- */
-        #scroll-container {
+        #scroll-options {
             position: absolute;
             top: 110px;
             right: 45px;
             width: 420px;
-            background: #fdf6e2; /* Warna kertas perkamen */
+            background: #fdf6e2;
             border: 3px solid #d4a373;
             padding: 25px 20px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-            z-index: 10;
-        }
-
-        #options-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+            z-index: 20;
         }
 
         .option-btn {
@@ -301,13 +275,15 @@
             background-color: #f4a261;
             color: #ffffff;
             border: 2px solid #e76f51;
-            padding: 10px 15px;
-            font-size: 0.95rem;
+            padding: 11px 16px;
+            font-size: 0.92rem;
             font-weight: 500;
             border-radius: 8px;
             cursor: pointer;
             text-align: left;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.08);
             transition: all 0.2s;
         }
         .option-btn:hover {
@@ -315,19 +291,19 @@
             transform: translateX(4px);
         }
 
-        /* Panel Kontrol di Luar */
-        #external-control {
+        /* Kontrol Bawah */
+        #controls {
             margin-top: 15px;
             display: flex;
             gap: 15px;
             align-items: center;
         }
-        #status-info {
+        #status-msg {
             color: #f1faee;
             font-size: 0.95rem;
             font-weight: 500;
         }
-        .action-btn {
+        .reset-btn {
             font-family: 'Lexend', sans-serif;
             background-color: #e76f51;
             color: white;
@@ -341,76 +317,72 @@
 </head>
 <body>
 
-    <!-- Area Game Utama (Gaya Canva Ilustrasi) -->
     <div id="game-container">
-        <!-- Pemandangan Tebing & Semak -->
-        <div class="scenery-left-cliff"></div>
-        <div class="scenery-right-shore"></div>
-        <div class="bush-1"></div>
-        <div class="bush-2"></div>
+        <!-- Background Padang Rumput & Pohon -->
+        <div class="scenery-bg"></div>
 
-        <!-- Papan Soal Kayu di Atas -->
+        <!-- Awan Bergerak Estetik -->
+        <div class="clouds-layer"></div>
+
+        <!-- Papan Soal di Atas -->
         <div id="question-board">
             <div id="question-text">The tall student studied today. (Pilih jawaban yang benar!)</div>
         </div>
 
-        <!-- Jembatan & Karakter Bergerak -->
-        <div id="bridge-area" class="stage-0">
-            <div class="bridge-tower-left"></div>
-            <div class="bridge-tower-right"></div>
-            <div class="bridge-rope-top"></div>
-            <div class="bridge-deck"></div>
-            <div id="character"></div>
-            <div id="splash-effect"></div>
+        <!-- Jembatan Lengkung Kayu & Karakter -->
+        <div id="bridge-wrapper" class="stage-0">
+            <!-- Gambar jembatan lengkung kayu transparan -->
+            <img src="https://i.ibb.co.com/m4Q3p1R/wooden-arch-bridge.png" alt="Jembatan Kayu" class="bridge-img">
+        </div>
+        <div id="character"></div>
+        <div id="splash"></div>
+
+        <!-- Sungai & Gelombang Air Kecil Bergelombang -->
+        <div class="river-section">
+            <div class="wave-layer wave-1"></div>
+            <div class="wave-layer wave-2"></div>
         </div>
 
-        <!-- Aliran Sungai Bawah -->
-        <div class="river-container">
-            <div class="river-wave"></div>
-        </div>
-
-        <!-- Kotak Gulungan Opsi Jawaban di Kanan -->
-        <div id="scroll-container">
-            <div id="options-container">
-                <button class="option-btn" onclick="testStage(1)">A. The tall student studied today.</button>
-                <button class="option-btn" onclick="testStage(2)">B. The big boy bought a book.</button>
-                <button class="option-btn" onclick="testWin()">C. My friend visited the museum.</button>
-                <button class="option-btn" onclick="testStage(3)">D. The young girl likes music.</button>
-            </div>
+        <!-- Kotak Opsi Jawaban di Kanan -->
+        <div id="scroll-options">
+            <button class="option-btn" onclick="triggerStage(1)">A. The tall student studied today.</button>
+            <button class="option-btn" onclick="triggerStage(2)">B. The big boy bought a book.</button>
+            <button class="option-btn" onclick="triggerWin()">C. My friend visited the museum.</button>
+            <button class="option-btn" onclick="triggerStage(3)">D. The young girl likes music.</button>
         </div>
     </div>
 
-    <!-- Panel Informasi Bawah -->
-    <div id="external-control">
-        <div id="status-info">Simulasi aktif: Silakan klik pilihan jawaban untuk tes animasi jembatan!</div>
-        <button class="action-btn" onclick="resetSim()">Reset Simulasi</button>
+    <!-- Informasi Status Simulasi -->
+    <div id="controls">
+        <div id="status-msg">Status: Siap! Klik opsi jawaban untuk melihat animasi jembatan.</div>
+        <button class="reset-btn" onclick="resetSim()">Reset Simulasi</button>
     </div>
 
     <script>
-        const bridgeArea = document.getElementById("bridge-area");
-        const statusInfo = document.getElementById("status-info");
+        const bridgeWrapper = document.getElementById("bridge-wrapper");
+        const statusMsg = document.getElementById("status-msg");
 
-        function testStage(stageNum) {
+        function triggerStage(stageNum) {
             if (stageNum === 1) {
-                bridgeArea.className = "stage-1";
-                statusInfo.innerText = "❌ Salah 1x: Tali jembatan mulai copot sebelah!";
+                bridgeWrapper.className = "stage-1";
+                statusMsg.innerText = "❌ Salah 1x: Jembatan mulai bergeser dan miring!";
             } else if (stageNum === 2) {
-                bridgeArea.className = "stage-2";
-                statusInfo.innerText = "❌ Salah 2x: Tali putus, jembatan kayu retak dan miring!";
+                bridgeWrapper.className = "stage-2";
+                statusMsg.innerText = "❌ Salah 2x: Jembatan miring parah dan karakter panik!";
             } else if (stageNum === 3) {
-                bridgeArea.className = "stage-3";
-                statusInfo.innerText = "💥 Salah 3x: Jembatan rubuh total & karakter tercebur ke sungai!";
+                bridgeWrapper.className = "stage-3";
+                statusMsg.innerText = "💥 Salah 3x: Jembatan rubuh total & karakter tercebur ke sungai!";
             }
         }
 
-        function testWin() {
-            bridgeArea.className = "stage-0";
-            statusInfo.innerText = "🎉 Benar! Karakter melangkah aman ke seberang!";
+        function triggerWin() {
+            bridgeWrapper.className = "stage-0";
+            statusMsg.innerText = "🎉 Benar! Karakter berhasil menyeberang dengan aman!";
         }
 
         function resetSim() {
-            bridgeArea.className = "stage-0";
-            statusInfo.innerText = "Simulasi direset ke posisi awal.";
+            bridgeWrapper.className = "stage-0";
+            statusMsg.innerText = "Simulasi direset ke posisi awal.";
         }
     </script>
 </body>
