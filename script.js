@@ -1,4 +1,4 @@
-// Ganti URL di bawah ini dengan URL API Google Apps Script kamu nanti
+// Menggunakan API dari SheetDB (Aman dari CORS)
 const API_URL = "https://sheetdb.io/api/v1/sf6lawxbra0x6";
 
 let questions = [];
@@ -21,7 +21,7 @@ async function fetchQuestions() {
         startGame();
     } catch (error) {
         console.error("Failed to load questions:", error);
-        questionText.innerText = "Failed to load questions. Please check your API URL.";
+        questionText.innerText = "Failed to load questions. Please check your SheetDB URL.";
     }
 }
 
