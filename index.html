@@ -109,11 +109,11 @@
 
         /* --- PENGATURAN POSISI MASING-MASING JEMBATAN --- */
         
-       /* Bridge 1: Gambar Statis */
+     /* Bridge 1: Gambar Statis */
         #bridge-img {
             position: absolute;
-            bottom: 60px;  /* Diturunkan dari 75px */
-            left: 55px;     /* Digeser ke kanan dari 33px */
+            bottom: 60px;  
+            left: 65px;     /* Digeser ke kanan dikit */
             width: 420px;
             z-index: 5;
         }
@@ -362,15 +362,15 @@
             bridgeVideo.currentTime = 0;
         }
 
-      function updateBridgeDisplay() {
+     function updateBridgeDisplay() {
             stopGreenScreenVideo();
 
             if (wrongAttempts === 0) {
                 bridgeImg.classList.remove("hidden");
                 bridgeCanvas.classList.add("hidden");
                 bridgeImg.src = 'bridge-1.png';
-                bridgeImg.style.left = "55px";  /* Disesuaikan */
-                bridgeImg.style.bottom = "60px"; /* Disesuaikan */
+                bridgeImg.style.left = "65px";  
+                bridgeImg.style.bottom = "60px"; 
             } 
             else {
                 bridgeImg.classList.add("hidden");
@@ -380,18 +380,18 @@
                 
                 if (wrongAttempts === 1) {
                     videoFile = 'bridge-2-fix.mp4';
-                    bridgeCanvas.style.left = "55px";  /* Disesuaikan */
-                    bridgeCanvas.style.bottom = "58px"; /* Disesuaikan */
+                    bridgeCanvas.style.left = "65px";  
+                    bridgeCanvas.style.bottom = "58px"; 
                 }
                 else if (wrongAttempts === 2) {
                     videoFile = 'bridge-3.mp4';
-                    bridgeCanvas.style.left = "55px";  /* Disesuaikan */
-                    bridgeCanvas.style.bottom = "60px"; /* Disesuaikan */
+                    bridgeCanvas.style.left = "65px";  
+                    bridgeCanvas.style.bottom = "60px"; 
                 }
                 else {
                     videoFile = 'bridge-4.mp4';
-                    bridgeCanvas.style.left = "55px";  /* Disesuaikan */
-                    bridgeCanvas.style.bottom = "55px"; /* Disesuaikan */
+                    bridgeCanvas.style.left = "65px";  // Digeser ke kanan dikit
+                    bridgeCanvas.style.bottom = "45px"; // Diturunkan lebih banyak khusus bridge-4
                 }
 
                 bridgeVideo.src = videoFile;
