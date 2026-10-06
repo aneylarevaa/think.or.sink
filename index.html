@@ -126,8 +126,8 @@
             z-index: 5;
         }
 
-        /* Elemen Video Tersembunyi */
-        #bridge-video {
+      <!-- Elemen Video Tersembunyi dengan Preload -->
+<video id="bridge-video" muted playsinline preload="auto"></video>
             display: none;
         }
 
@@ -141,8 +141,8 @@
         }
 
         .animate-board {
-            animation: popIn 0.3s ease-out forwards;
-        }
+    animation: popIn 0.2s ease-out forwards; /* Diubah jadi 0.2 detik */
+}
 
         /* PAPAN SOAL DI SEBELAH KANAN ATAS */
         #wooden-sign {
@@ -368,58 +368,61 @@
             bridgeVideo.currentTime = 0;
         }
 
- function updateBridgeDisplay() {
-            stopGreenScreenVideo();
+function updateBridgeDisplay() {
+    stopGreenScreenVideo();
 
-            if (wrongAttempts === 0) {
-                // Bridge 1
-                bridgeImg.classList.remove("hidden");
-                bridgeCanvas.classList.add("hidden");
-                bridgeImg.src = 'bridge-1.png';
-            } 
-            else {
-                bridgeImg.classList.add("hidden");
-                bridgeCanvas.classList.remove("hidden");
+    if (wrongAttempts === 0) {
+        bridgeImg.classList.remove("hidden");
+        bridgeCanvas.classList.add("hidden");
+        bridgeImg.src = 'bridge-1.png';
+    } 
+    else {
+        bridgeImg.classList.add("hidden");
+        bridgeCanvas.classList.remove("hidden");
 
-                let videoFile = '';
-                
-                // Posisi awal pas (sama seperti Bridge 1), tapi diturunkan sedikit khusus saat video tampil/selesai
-                if (wrongAttempts === 1) {
-                    videoFile = 'bridge-2-fix.mp4';
-                    bridgeCanvas.style.left = "33%";
-                    bridgeCanvas.style.bottom = "65px";  /* Diturunkan dari 73px supaya pas selesai gak naik */
-                    bridgeCanvas.style.transform = "translateX(-50%)";
-                }
-                else if (wrongAttempts === 2) {
-                    videoFile = 'bridge-3.mp4';
-                    bridgeCanvas.style.left = "33%";
-                    bridgeCanvas.style.bottom = "67px";  /* Diturunkan dari 75px */
-                    bridgeCanvas.style.transform = "translateX(-50%)";
-                }
-                else {
-                    videoFile = 'bridge-4.mp4';
-                    bridgeCanvas.style.left = "33%";
-                    bridgeCanvas.style.bottom = "52px";  /* Diturunkan dari 60px */
-                    bridgeCanvas.style.transform = "translateX(-50%)";
-                }
-
-                bridgeVideo.src = videoFile;
-                
-                bridgeVideo.onloadedmetadata = () => {
-                    bridgeCanvas.width = bridgeVideo.videoWidth;
-                    bridgeCanvas.height = bridgeVideo.videoHeight;
-                };
-
-                bridgeVideo.currentTime = 0;
-                bridgeVideo.play().then(() => {
-                    playGreenScreenEffect();
-                }).catch(e => console.log("Autoplay prevented:", e));
-
-                bridgeVideo.onended = () => {
-                    cancelAnimationFrame(videoAnimationId);
-                };
-            }
+        let videoFile = '';
+        
+        if (wrongAttempts === 1) {
+            videoFile = 'bridge-2-fix.mp4';
+            bridgeCanvas.style.left = "33%";
+            bridgeCanvas.style.bottom = "65px";
+            bridgeCanvas.style.transform = "translateX(-50%)";
         }
+        else if (wrongAttempts === 2) {
+            videoFile = 'bridge-3.mp4';
+            bridgeCanvas.style.left = "33%";
+            bridgeCanvas.style.bottom = "67px";
+            bridgeCanvas.style.transform = "translateX(-50%)";
+        }
+        else {
+            videoFile = 'bridge-4.mp4';
+            bridgeCanvas.style.left = "33%";
+            bridgeCanvas.style.bottom = "52px";
+            bridgeCanvas.style.transform = "translateX(-50%)";
+        }
+
+        // Jika file video berbeda, ganti sumber dan load langsung
+        if (bridgeVideo.src.indexOf(videoFile) === -1) {
+            bridgeVideo.src = videoFile;
+            bridgeVideo.load(); // Memuat ulang data video secara instan
+        }
+        
+        bridgeVideo.onloadedmetadata = () => {
+            bridgeCanvas.width = bridgeVideo.videoWidth;
+            bridgeCanvas.height = bridgeVideo.videoHeight;
+        };
+
+        bridgeVideo.currentTime = 0;
+        // Langsung mainkan video tanpa jeda
+        bridgeVideo.play().then(() => {
+            playGreenScreenEffect();
+        }).catch(e => console.log("Autoplay prevented:", e));
+
+        bridgeVideo.onended = () => {
+            cancelAnimationFrame(videoAnimationId);
+        };
+    }
+}
         function playGreenScreenEffect() {
             function processFrame() {
                 if (bridgeVideo.paused || bridgeVideo.ended) return;
