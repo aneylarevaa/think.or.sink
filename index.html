@@ -107,11 +107,11 @@
             transform: scale(1.08);
         }
 
-        /* --- POSISI KONSISTEN UNTUK SEMUA JEMBATAN --- */
+        /* --- POSISI KUNCI MUTLAK: DIJAMIN TIDAK BERGESER ATAU NAIK --- */
         #bridge-img, #bridge-canvas {
             position: absolute;
-            bottom: 75px;  /* Disamakan persis ke bawah: 75px */
-            left: 35%;     /* Disamakan persis ke kiri: 35% */
+            bottom: 75px;  /* Posisi bawah dikunci tetap */
+            left: 35%;     /* Posisi kiri dikunci tetap */
             transform: translateX(-50%);
             width: 420px;
             z-index: 5;
