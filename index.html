@@ -107,7 +107,7 @@
             transform: scale(1.08);
         }
 
-        /* --- PENGATURAN POSISI MASING-MASING JEMBATAN --- */
+        /* --- PENGATURAN POSISI MASING-MASING JEMBATAN (DIKEMBALIKAN KE POSISI RAPI) --- */
         
         /* Bridge 1: Gambar Statis */
         #bridge-img {
@@ -298,27 +298,22 @@
                 const response = await fetch(SPREADSHEET_API_URL);
                 const data = await response.json();
                 
-                if (data && data.length > 0) {
-                    questions = data.map(row => ({
-                        question: row.question,
-                        options: [row.optionA, row.optionB, row.optionC, row.optionD],
-                        answer: String(row.correctAnswer).trim()
-                    }));
+                questions = data.map(row => ({
+                    question: row.question,
+                    options: [row.optionA, row.optionB, row.optionC, row.optionD],
+                    answer: String(row.correctAnswer).trim()
+                }));
+
+                if (questions.length > 0) {
+                    loadQuestion();
+                    statusMsg.innerText = "Status: Answer the question above!";
                 } else {
-                    throw new Error("No data found in SheetDB");
+                    questionText.innerText = "No questions found in SheetDB.";
                 }
             } catch (error) {
-                console.error("Error fetching from SheetDB:", error);
-                questionText.innerText = "Failed to load questions from SheetDB.";
-                statusMsg.innerText = "Status: Error loading questions.";
-                return;
-            }
-
-            if (questions.length > 0) {
-                loadQuestion();
-                statusMsg.innerText = "Status: Answer the question above!";
-            } else {
-                questionText.innerText = "No questions available in Spreadsheet.";
+                console.error("Failed to load SheetDB API:", error);
+                statusMsg.innerText = "⚠ Failed to load data.";
+                questionText.innerText = "Error loading from SheetDB.";
             }
         }
 
@@ -380,17 +375,17 @@
                 
                 if (wrongAttempts === 1) {
                     videoFile = 'bridge-2-fix.mp4';
-                    bridgeCanvas.style.left = "33%";
+                    bridgeCanvas.style.left = "33px";
                     bridgeCanvas.style.bottom = "73px";
                 }
                 else if (wrongAttempts === 2) {
                     videoFile = 'bridge-3.mp4';
-                    bridgeCanvas.style.left = "33%";
+                    bridgeCanvas.style.left = "33px";
                     bridgeCanvas.style.bottom = "75px";
                 }
                 else {
                     videoFile = 'bridge-4.mp4';
-                    bridgeCanvas.style.left = "33%";
+                    bridgeCanvas.style.left = "33px";
                     bridgeCanvas.style.bottom = "70px";
                 }
 
@@ -425,7 +420,7 @@
                     let green = frame.data[i + 1];
                     let blue = frame.data[i + 2];
 
-                    if (green > 105 && red < 90 && blue < 90 && green > red + 25 && green > blue + 25) {
+                    if (green > 100 && red < 100 && blue < 100) {
                         frame.data[i + 3] = 0; 
                     }
                 }
