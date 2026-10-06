@@ -444,12 +444,12 @@
             processFrame();
         }
 
-       function checkAnswer(selected, correct) {
+      function checkAnswer(selected, correct) {
             const isCorrect = (selected.trim().toLowerCase() === correct.toLowerCase());
 
             if (isCorrect) {
                 currentIndex++;
-                // SIMPAN POSISI TERAKHIR SUPAYA JEMBATAN TETAP STAY DI SINI DAN TIDAK HANCUR/BERUBAH
+                // Checkpoint aman diperbarui HANYA KETIKA BENAR
                 currentBridgeLevel = wrongAttempts; 
                 
                 statusMsg.innerText = "✨ Correct! Bridge is safe, moving to next question...";
@@ -458,8 +458,9 @@
                 wrongAttempts++;
                 updateBridgeDisplay();
 
-                // Update juga level terakhir yang tercapai saat salah
-                currentBridgeLevel = wrongAttempts;
+                // HAPUS ATAU JANGAN TIMPA currentBridgeLevel DISINI 
+                // Biarkan currentBridgeLevel tetap di posisi aman terakhir, 
+                // sedangkan wrongAttempts terus bertambah untuk ngecek Game Over (>= 3)
 
                 if (wrongAttempts >= 3) {
                     triggerTransition();
