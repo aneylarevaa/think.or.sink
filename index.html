@@ -363,7 +363,7 @@
             bridgeVideo.currentTime = 0;
         }
 
-   function updateBridgeDisplay() {
+ function updateBridgeDisplay() {
             stopGreenScreenVideo();
 
             if (wrongAttempts === 0) {
@@ -378,24 +378,23 @@
 
                 let videoFile = '';
                 
-                // Atur posisi spesifik untuk Bridge 2, 3, dan 4 (disamakan dengan Bridge-1: left 33% + transform)
+                // Posisi awal pas (sama seperti Bridge 1), tapi diturunkan sedikit khusus saat video tampil/selesai
                 if (wrongAttempts === 1) {
                     videoFile = 'bridge-2-fix.mp4';
                     bridgeCanvas.style.left = "33%";
-                    bridgeCanvas.style.bottom = "73px";
+                    bridgeCanvas.style.bottom = "65px";  /* Diturunkan dari 73px supaya pas selesai gak naik */
                     bridgeCanvas.style.transform = "translateX(-50%)";
                 }
                 else if (wrongAttempts === 2) {
                     videoFile = 'bridge-3.mp4';
                     bridgeCanvas.style.left = "33%";
-                    bridgeCanvas.style.bottom = "75px";
+                    bridgeCanvas.style.bottom = "67px";  /* Diturunkan dari 75px */
                     bridgeCanvas.style.transform = "translateX(-50%)";
                 }
                 else {
                     videoFile = 'bridge-4.mp4';
-                    // Bridge 4: Disamakan posisinya, tapi diturunkan ke bawah dikit sesuai permintaan
                     bridgeCanvas.style.left = "33%";
-                    bridgeCanvas.style.bottom = "60px";  
+                    bridgeCanvas.style.bottom = "52px";  /* Diturunkan dari 60px */
                     bridgeCanvas.style.transform = "translateX(-50%)";
                 }
 
