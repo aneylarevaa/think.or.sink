@@ -110,15 +110,19 @@
             transform: scale(1.08);
         }
 
-        /* ELEMEN JEMBATAN (GAMBAR & VIDEO) */
-        #bridge-img, #bridge-video {
+        /* ELEMEN JEMBATAN (GAMBAR & CANVAS GREEN SCREEN) */
+        #bridge-img, #bridge-canvas {
             position: absolute;
             bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
             width: 600px;
             z-index: 5;
-            opacity: 1;
+        }
+
+        /* Video asli disembunyikan karena diproses via canvas */
+        #bridge-video {
+            display: none;
         }
 
         .hidden {
@@ -241,11 +245,11 @@
         <!-- Jembatan 1 (.png) -->
         <img id="bridge-img" src="bridge-1.png" alt="Bridge">
 
-        <!-- Jembatan 2 Berupa Video (.mov) -->
-        <video id="bridge-video" class="hidden" muted playsinline>
-            <source src="bridge-2-fix.mov" type="video/quicktime">
-            Your browser does not support the video tag.
+        <!-- Video & Canvas untuk Green Screen Remover -->
+        <video id="bridge-video" muted playsinline>
+            <source src="bridge-2-fix.mp4" type="video/mp4">
         </video>
+        <canvas id="bridge-canvas" class="hidden"></canvas>
 
         <div id="wooden-sign" class="animate-board">
             <div id="question-text">Loading questions from SheetDB...</div>
@@ -271,7 +275,11 @@
         const statusMsg = document.getElementById("status-msg");
         const bridgeImg = document.getElementById("bridge-img");
         const bridgeVideo = document.getElementById("bridge-video");
+        const bridgeCanvas = document.getElementById("bridge-canvas");
+        const ctx = bridgeCanvas.getContext("2d", { willReadFrequently: true });
         const mainMenu = document.getElementById("main-menu");
+
+        let videoAnimationId = null;
 
         async function startGame() {
             mainMenu.style.opacity = "0";
@@ -286,6 +294,7 @@
             statusMsg.innerText = "Fetching questions from SheetDB...";
             currentIndex = 0;
             wrongAttempts = 0;
+            stopGreenScreenVideo();
             updateBridgeDisplay();
 
             try {
@@ -345,31 +354,79 @@
             scrollOptions.classList.add("animate-board");
         }
 
+        function stopGreenScreenVideo() {
+            if (videoAnimationId) {
+                cancelAnimationFrame(videoAnimationId);
+                videoAnimationId = null;
+            }
+            bridgeVideo.pause();
+            bridgeVideo.currentTime = 0;
+        }
+
         function updateBridgeDisplay() {
+            stopGreenScreenVideo();
+
             if (wrongAttempts === 0) {
                 bridgeImg.classList.remove("hidden");
-                bridgeVideo.classList.add("hidden");
+                bridgeCanvas.classList.add("hidden");
                 bridgeImg.src = "bridge-1.png";
             } 
             else if (wrongAttempts === 1) {
-                // Salah ke-1: Putar video mov bridge-2-fix dari awal, lalu diam di frame terakhir
+                // Salah ke-1: Putar video green screen & hapus background hijaunya lewat canvas
                 bridgeImg.classList.add("hidden");
-                bridgeVideo.classList.remove("hidden");
+                bridgeCanvas.classList.remove("hidden");
+
+                bridgeVideo.onloadedmetadata = () => {
+                    bridgeCanvas.width = bridgeVideo.videoWidth;
+                    bridgeCanvas.height = bridgeVideo.videoHeight;
+                };
+
                 bridgeVideo.currentTime = 0;
-                bridgeVideo.play();
+                bridgeVideo.play().then(() => {
+                    playGreenScreenEffect();
+                }).catch(e => console.log("Autoplay blocked:", e));
+
+                // Freeze di frame terakhir saat video habis
+                bridgeVideo.onended = () => {
+                    cancelAnimationFrame(videoAnimationId);
+                };
             } 
             else if (wrongAttempts === 2) {
-                // Salah ke-2: Ubah ke bridge-3 (gambar statis)
-                bridgeVideo.classList.add("hidden");
+                bridgeCanvas.classList.add("hidden");
                 bridgeImg.classList.remove("hidden");
                 bridgeImg.src = "bridge-3.png";
             } 
             else {
-                // Salah ke-3: Game Over (bridge-4)
-                bridgeVideo.classList.add("hidden");
+                bridgeCanvas.classList.add("hidden");
                 bridgeImg.classList.remove("hidden");
                 bridgeImg.src = "bridge-4.png";
             }
+        }
+
+        // Fungsi ajaib untuk membuang warna hijau secara real-time
+        function playGreenScreenEffect() {
+            function processFrame() {
+                if (bridgeVideo.paused || bridgeVideo.ended) return;
+
+                ctx.drawImage(bridgeVideo, 0, 0, bridgeCanvas.width, bridgeCanvas.height);
+                let frame = ctx.getImageData(0, 0, bridgeCanvas.width, bridgeCanvas.height);
+                let l = frame.data.length;
+
+                for (let i = 0; i < l; i += 4) {
+                    let red = frame.data[i];
+                    let green = frame.data[i + 1];
+                    let blue = frame.data[i + 2];
+
+                    // Jika pikselnya dominan hijau (Chroma Key Removal)
+                    if (green > 90 && red < 100 && blue < 100) {
+                        frame.data[i + 3] = 0; // Ubah Alpha jadi 0 (Transparan)
+                    }
+                }
+
+                ctx.putImageData(frame, 0, 0);
+                videoAnimationId = requestAnimationFrame(processFrame);
+            }
+            processFrame();
         }
 
         function checkAnswer(selected, correct) {
