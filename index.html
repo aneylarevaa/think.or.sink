@@ -107,12 +107,12 @@
             transform: scale(1.08);
         }
 
-        /* --- PENGATURAN POSISI MASING-MASING JEMBATAN --- */
+        /* --- PENGATURAN POSISI MASING-MASING JEMBATAN (SESUAI KODE ASLIMU) --- */
         
         /* Bridge 1: Gambar Statis */
         #bridge-img {
             position: absolute;
-            bottom: 75px; 
+            bottom: 75px;  
             left: 35px;     
             transform: translateX(-50%);
             width: 420px;
@@ -136,7 +136,7 @@
         }
 
         .animate-board {
-            animation: popIn 0.2s ease-out forwards;
+            animation: popIn 0.3s ease-out forwards;
         }
 
         /* PAPAN SOAL DI SEBELAH KANAN ATAS */
@@ -243,8 +243,7 @@
         <!-- Jembatan 1 (Gambar PNG Statis) -->
         <img id="bridge-img" src="bridge-1.png" alt="Bridge 1">
 
-        <!-- Video & Canvas untuk Green Screen Remover (Diposisikan dengan benar di luar CSS) -->
-        <video id="bridge-video" muted playsinline preload="auto"></video>
+        <!-- Canvas untuk Green Screen Remover -->
         <canvas id="bridge-canvas" class="hidden"></canvas>
 
         <!-- Papan Soal & Opsi di Kanan -->
@@ -265,18 +264,40 @@
         let questions = [];
         let currentIndex = 0;
         let wrongAttempts = 0; 
-        
+        let currentBridgeLevel = 0; 
+
         const woodenSign = document.getElementById("wooden-sign");
         const questionText = document.getElementById("question-text");
         const scrollOptions = document.getElementById("scroll-options");
         const statusMsg = document.getElementById("status-msg");
         const bridgeImg = document.getElementById("bridge-img");
-        const bridgeVideo = document.getElementById("bridge-video");
         const bridgeCanvas = document.getElementById("bridge-canvas");
         const ctx = bridgeCanvas.getContext("2d", { willReadFrequently: true });
         const mainMenu = document.getElementById("main-menu");
 
         let videoAnimationId = null;
+        let activeVideo = null;
+
+        // --- PRELOAD SEMUA VIDEO AGAR TRANSISI INSTAN TANPA JEDA ---
+        const videoFiles = {
+            1: 'bridge-2-fix.mp4',
+            2: 'bridge-3.mp4',
+            3: 'bridge-4.mp4'
+        };
+        const preloadedVideos = {};
+
+        function preloadAllVideos() {
+            for (let key in videoFiles) {
+                const vid = document.createElement('video');
+                vid.src = videoFiles[key];
+                vid.muted = true;
+                vid.playsInline = true;
+                vid.preload = "auto";
+                vid.load();
+                preloadedVideos[key] = vid;
+            }
+        }
+        preloadAllVideos(); // Jalankan saat halaman dimuat
 
         async function startGame() {
             mainMenu.style.opacity = "0";
@@ -292,7 +313,7 @@
             currentIndex = 0;
             wrongAttempts = 0;
             currentBridgeLevel = 0; 
-            stopGreenScreenVideo();
+            stopActiveVideo();
             updateBridgeDisplay();
 
             try {
@@ -317,8 +338,6 @@
             }
         }
 
-       let currentBridgeLevel = 0; 
-
         function loadQuestion() {
             if (currentIndex >= questions.length) {
                 triggerTransition();
@@ -330,7 +349,6 @@
 
             const q = questions[currentIndex];
             triggerTransition();
-
             wrongAttempts = currentBridgeLevel; 
 
             questionText.innerText = `(${currentIndex + 1}/${questions.length}) ${q.question}`;
@@ -354,17 +372,19 @@
             scrollOptions.classList.add("animate-board");
         }
 
-        function stopGreenScreenVideo() {
+        function stopActiveVideo() {
             if (videoAnimationId) {
                 cancelAnimationFrame(videoAnimationId);
                 videoAnimationId = null;
             }
-            bridgeVideo.pause();
-            bridgeVideo.currentTime = 0;
+            if (activeVideo) {
+                activeVideo.pause();
+                activeVideo.currentTime = 0;
+            }
         }
 
         function updateBridgeDisplay() {
-            stopGreenScreenVideo();
+            stopActiveVideo();
 
             if (wrongAttempts === 0) {
                 bridgeImg.classList.remove("hidden");
@@ -375,53 +395,47 @@
                 bridgeImg.classList.add("hidden");
                 bridgeCanvas.classList.remove("hidden");
 
-                let videoFile = '';
-                
+                // Mengatur koordinat persis seperti kode aslimu
                 if (wrongAttempts === 1) {
-                    videoFile = 'bridge-2-fix.mp4';
                     bridgeCanvas.style.left = "33%";
-                    bridgeCanvas.style.bottom = "65px";
+                    bridgeCanvas.style.bottom = "65px"; 
                     bridgeCanvas.style.transform = "translateX(-50%)";
                 }
                 else if (wrongAttempts === 2) {
-                    videoFile = 'bridge-3.mp4';
                     bridgeCanvas.style.left = "33%";
-                    bridgeCanvas.style.bottom = "67px";
+                    bridgeCanvas.style.bottom = "67px"; 
                     bridgeCanvas.style.transform = "translateX(-50%)";
                 }
                 else {
-                    videoFile = 'bridge-4.mp4';
                     bridgeCanvas.style.left = "33%";
-                    bridgeCanvas.style.bottom = "52px";
+                    bridgeCanvas.style.bottom = "52px"; 
                     bridgeCanvas.style.transform = "translateX(-50%)";
                 }
 
-                if (bridgeVideo.src.indexOf(videoFile) === -1) {
-                    bridgeVideo.src = videoFile;
-                    bridgeVideo.load(); 
+                // Ambil video langsung dari hasil preload di memori (Tanpa jeda loading)
+                activeVideo = preloadedVideos[wrongAttempts];
+
+                if (activeVideo) {
+                    bridgeCanvas.width = activeVideo.videoWidth || 420;
+                    bridgeCanvas.height = activeVideo.videoHeight || 420;
+
+                    activeVideo.currentTime = 0;
+                    activeVideo.play().then(() => {
+                        playGreenScreenEffect(activeVideo);
+                    }).catch(e => console.log("Autoplay prevented:", e));
+
+                    activeVideo.onended = () => {
+                        cancelAnimationFrame(videoAnimationId);
+                    };
                 }
-                
-                bridgeVideo.onloadedmetadata = () => {
-                    bridgeCanvas.width = bridgeVideo.videoWidth;
-                    bridgeCanvas.height = bridgeVideo.videoHeight;
-                };
-
-                bridgeVideo.currentTime = 0;
-                bridgeVideo.play().then(() => {
-                    playGreenScreenEffect();
-                }).catch(e => console.log("Autoplay prevented:", e));
-
-                bridgeVideo.onended = () => {
-                    cancelAnimationFrame(videoAnimationId);
-                };
             }
         }
 
-        function playGreenScreenEffect() {
+        function playGreenScreenEffect(videoTarget) {
             function processFrame() {
-                if (bridgeVideo.paused || bridgeVideo.ended) return;
+                if (videoTarget.paused || videoTarget.ended) return;
 
-                ctx.drawImage(bridgeVideo, 0, 0, bridgeCanvas.width, bridgeCanvas.height);
+                ctx.drawImage(videoTarget, 0, 0, bridgeCanvas.width, bridgeCanvas.height);
                 let frame = ctx.getImageData(0, 0, bridgeCanvas.width, bridgeCanvas.height);
                 let l = frame.data.length;
 
@@ -452,7 +466,7 @@
                 setTimeout(() => loadQuestion(), 500);
             } else {
                 wrongAttempts++;
-                updateBridgeDisplay();
+                updateBridgeDisplay(); // Langsung ganti jembatan secara instan tanpa jeda!
 
                 if (wrongAttempts >= 3) {
                     triggerTransition();
