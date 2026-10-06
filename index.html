@@ -112,8 +112,8 @@
         /* Bridge 1: Gambar Statis */
         #bridge-img {
             position: absolute;
-            bottom: 75px;  /* Sesuaikan tinggi vertikal */
-            left: 33%;     /* Digeser ke kanan */
+            bottom: 75px;  
+            left: 33px;     
             transform: translateX(-50%);
             width: 420px;
             z-index: 5;
@@ -260,7 +260,7 @@
     </div>
 
     <script>
-        const SSPREADSHEET_API_URL = "https://sheetdb.io/api/v1/sf6lawxbra0x6";
+        const SPREADSHEET_API_URL = "https://sheetdb.io/api/v1/sf6lawxbra0x6";
 
         let questions = [];
         let currentIndex = 0;
@@ -298,21 +298,27 @@
                 const response = await fetch(SPREADSHEET_API_URL);
                 const data = await response.json();
                 
-                questions = data.map(row => ({
-                    question: row.question,
-                    options: [row.optionA, row.optionB, row.optionC, row.optionD],
-                    answer: String(row.correctAnswer).trim()
-                }));
-
-                if (questions.length > 0) {
-                    loadQuestion();
-                    statusMsg.innerText = "Status: Answer the question above!";
+                if (data && data.length > 0) {
+                    questions = data.map(row => ({
+                        question: row.question,
+                        options: [row.optionA, row.optionB, row.optionC, row.optionD],
+                        answer: String(row.correctAnswer).trim()
+                    }));
                 } else {
-                    questionText.innerText = "No questions found in SheetDB.";
+                    throw new Error("No data found in SheetDB");
                 }
             } catch (error) {
-                console.error("Failed to load SheetDB API:", error);
-                statusMsg.innerText = "⚠ Failed to load data.";
+                console.error("Error fetching from SheetDB:", error);
+                questionText.innerText = "Failed to load questions from SheetDB.";
+                statusMsg.innerText = "Status: Error loading questions.";
+                return;
+            }
+
+            if (questions.length > 0) {
+                loadQuestion();
+                statusMsg.innerText = "Status: Answer the question above!";
+            } else {
+                questionText.innerText = "No questions available in Spreadsheet.";
             }
         }
 
@@ -362,7 +368,6 @@
             stopGreenScreenVideo();
 
             if (wrongAttempts === 0) {
-                // Bridge 1 (Kurang ke kanan)
                 bridgeImg.classList.remove("hidden");
                 bridgeCanvas.classList.add("hidden");
                 bridgeImg.src = 'bridge-1.png';
@@ -373,22 +378,18 @@
 
                 let videoFile = '';
                 
-                // Atur posisi spesifik untuk Bridge 2, 3, dan 4
                 if (wrongAttempts === 1) {
                     videoFile = 'bridge-2-fix.mp4';
-                    // Bridge 2: Kurang ke kanan & ke bawah dikit
                     bridgeCanvas.style.left = "33%";
                     bridgeCanvas.style.bottom = "73px";
                 }
                 else if (wrongAttempts === 2) {
                     videoFile = 'bridge-3.mp4';
-                    // Bridge 3: Kurang ke kanan
                     bridgeCanvas.style.left = "33%";
                     bridgeCanvas.style.bottom = "75px";
                 }
                 else {
                     videoFile = 'bridge-4.mp4';
-                    // Bridge 4: Kurang ke kanan & ke bawah
                     bridgeCanvas.style.left = "33%";
                     bridgeCanvas.style.bottom = "70px";
                 }
