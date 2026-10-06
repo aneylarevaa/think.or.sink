@@ -357,7 +357,7 @@
             bridgeVideo.currentTime = 0;
         }
 
-        function updateBridgeDisplay() {
+      function updateBridgeDisplay() {
             stopGreenScreenVideo();
 
             if (wrongAttempts === 0) {
@@ -371,14 +371,18 @@
 
                 let videoFile = '';
                 
+                // --- ATUR POSISI BOTTOM BERDASARKAN LEVEL JEMBATAN ---
                 if (wrongAttempts === 1) {
                     videoFile = 'bridge-2-fix.mp4';
+                    bridgeCanvas.style.bottom = "75px"; // Posisi standar sejajar Bridge 1
                 }
                 else if (wrongAttempts === 2) {
                     videoFile = 'bridge-3.mp4';
+                    bridgeCanvas.style.bottom = "75px"; // Posisi standar sejajar Bridge 1
                 }
                 else {
                     videoFile = 'bridge-4.mp4';
+                    bridgeCanvas.style.bottom = "50px"; // <-- TURUNKAN INI! Angka makin kecil makin ke bawah (sesuaikan misal 40px atau 50px biar gak naik)
                 }
 
                 bridgeVideo.src = videoFile;
@@ -398,7 +402,6 @@
                 };
             }
         }
-
         function playGreenScreenEffect() {
             function processFrame() {
                 if (bridgeVideo.paused || bridgeVideo.ended) return;
