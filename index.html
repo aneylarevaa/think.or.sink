@@ -292,10 +292,11 @@
             await initGame();
         }
 
-        async function initGame() {
+      async function initGame() {
             statusMsg.innerText = "Fetching questions from SheetDB...";
             currentIndex = 0;
             wrongAttempts = 0;
+            currentBridgeLevel = 0; // Reset ke bridge 1 saat game baru/restart
             stopGreenScreenVideo();
             updateBridgeDisplay();
 
@@ -321,6 +322,8 @@
             }
         }
 
+       let currentBridgeLevel = 0; // Menyimpan level jembatan terakhir yang aman
+
         function loadQuestion() {
             if (currentIndex >= questions.length) {
                 triggerTransition();
@@ -333,6 +336,9 @@
             const q = questions[currentIndex];
             triggerTransition();
 
+            // RESET MISTAKE KHUSUS UNTUK SOAL BARU, TAPI POSISI JEMBATAN DI-LOCK DI LEVEL TERAKHIR
+            wrongAttempts = currentBridgeLevel; 
+
             questionText.innerText = `(${currentIndex + 1}/${questions.length}) ${q.question}`;
             scrollOptions.innerHTML = "";
 
@@ -344,7 +350,6 @@
                 scrollOptions.appendChild(btn);
             });
         }
-
         function triggerTransition() {
             woodenSign.classList.remove("animate-board");
             scrollOptions.classList.remove("animate-board");
