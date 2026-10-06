@@ -36,18 +36,18 @@
             overflow: hidden;
         }
 
-        /* LOGO GAMBAR DI DALAM GAME (DIPERBESAR DIKIT) */
+        /* LOGO GAMBAR DI DALAM GAME */
         #game-logo {
             position: absolute;
             top: 15px;
             left: 20px;
-            height: 65px; /* Diperbesar dari 45px ke 65px */
+            height: 65px;
             width: auto;
             z-index: 20;
             filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5));
         }
 
-        /* LANDING PAGE / MENU UTAMA (AWAL BUKA WEB) */
+        /* LANDING PAGE / MENU UTAMA */
         #main-menu {
             position: absolute;
             top: 0;
@@ -66,7 +66,7 @@
 
         /* LOGO DI MENU UTAMA */
         #menu-logo {
-            height: 90px; /* Ukuran logo di halaman utama lebih besar lagi biar ciamik */
+            height: 90px;
             width: auto;
             margin-bottom: 15px;
             filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
@@ -110,15 +110,18 @@
             transform: scale(1.08);
         }
 
-        /* ELEMEN JEMBATAN DI TENGAH SUNGAI */
-        #bridge-img {
+        /* ELEMEN JEMBATAN (GAMBAR & VIDEO) */
+        #bridge-img, #bridge-video {
             position: absolute;
             bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
             width: 600px;
             z-index: 5;
-            transition: all 0.3s ease;
+        }
+
+        .hidden {
+            display: none !important;
         }
 
         @keyframes popIn {
@@ -226,17 +229,22 @@
         <!-- Logo Gambar di Pojok Kiri Atas Game -->
         <img id="game-logo" src="logo.png" alt="Logo">
 
-        <!-- Landing Page / Menu Utama (Muncul Pertama Kali) -->
+        <!-- Landing Page / Menu Utama -->
         <div id="main-menu">
-            <!-- Logo Besar di Menu Utama -->
             <img id="menu-logo" src="logo.png" alt="Logo">
             <h1 class="menu-title">Think or Sink</h1>
             <p class="menu-subtitle">Test your knowledge before the bridge collapses!</p>
             <button class="play-btn" onclick="startGame()">PLAY</button>
         </div>
 
-        <!-- Gambar Jembatan (Berubah tiap salah jawab) -->
+        <!-- Jembatan 1 (.png) -->
         <img id="bridge-img" src="bridge-1.png" alt="Bridge">
+
+        <!-- Jembatan 2 Berupa Video (.webm) -->
+        <video id="bridge-video" class="hidden" muted playsinline>
+            <source src="bridge-2.webm" type="video/webm">
+            Your browser does not support the video tag.
+        </video>
 
         <div id="wooden-sign" class="animate-board">
             <div id="question-text">Loading questions from SheetDB...</div>
@@ -261,6 +269,7 @@
         const scrollOptions = document.getElementById("scroll-options");
         const statusMsg = document.getElementById("status-msg");
         const bridgeImg = document.getElementById("bridge-img");
+        const bridgeVideo = document.getElementById("bridge-video");
         const mainMenu = document.getElementById("main-menu");
 
         async function startGame() {
@@ -276,7 +285,7 @@
             statusMsg.innerText = "Fetching questions from SheetDB...";
             currentIndex = 0;
             wrongAttempts = 0;
-            updateBridgeImage();
+            updateBridgeDisplay();
 
             try {
                 const response = await fetch(SPREADSHEET_API_URL);
@@ -335,11 +344,29 @@
             scrollOptions.classList.add("animate-board");
         }
 
-        function updateBridgeImage() {
-            if (wrongAttempts === 0) bridgeImg.src = "bridge-1.png";
-            else if (wrongAttempts === 1) bridgeImg.src = "bridge-2.png";
-            else if (wrongAttempts === 2) bridgeImg.src = "bridge-3.png";
+        function updateBridgeDisplay() {
+            if (wrongAttempts === 0) {
+                bridgeImg.classList.remove("hidden");
+                bridgeVideo.classList.add("hidden");
+                bridgeImg.src = "bridge-1.png";
+            } 
+            else if (wrongAttempts === 1) {
+                // Salah ke-1: Putar video webm bridge-2 dari awal, lalu diam di frame terakhir
+                bridgeImg.classList.add("hidden");
+                bridgeVideo.classList.remove("hidden");
+                bridgeVideo.currentTime = 0;
+                bridgeVideo.play();
+            } 
+            else if (wrongAttempts === 2) {
+                // Salah ke-2: Ubah ke bridge-3 (gambar statis)
+                bridgeVideo.classList.add("hidden");
+                bridgeImg.classList.remove("hidden");
+                bridgeImg.src = "bridge-3.png";
+            } 
             else {
+                // Salah ke-3: Game Over (bridge-4)
+                bridgeVideo.classList.add("hidden");
+                bridgeImg.classList.remove("hidden");
                 bridgeImg.src = "bridge-4.png";
             }
         }
@@ -353,7 +380,7 @@
                 setTimeout(() => loadQuestion(), 500);
             } else {
                 wrongAttempts++;
-                updateBridgeImage();
+                updateBridgeDisplay();
 
                 if (wrongAttempts >= 3) {
                     triggerTransition();
