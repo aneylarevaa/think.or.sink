@@ -109,11 +109,12 @@
 
         /* --- PENGATURAN POSISI MASING-MASING JEMBATAN --- */
         
-     /* Bridge 1: Gambar Statis */
+    /* Bridge 1: Gambar Statis */
         #bridge-img {
             position: absolute;
-            bottom: 60px;  
-            left: 65px;     /* Digeser ke kanan dikit */
+            bottom: 75px;  /* Sesuaikan tinggi vertikal */
+            left: 35%;     /* Digeser sedikit ke kanan dari 33% */
+            transform: translateX(-50%);
             width: 420px;
             z-index: 5;
         }
@@ -362,15 +363,14 @@
             bridgeVideo.currentTime = 0;
         }
 
-     function updateBridgeDisplay() {
+    function updateBridgeDisplay() {
             stopGreenScreenVideo();
 
             if (wrongAttempts === 0) {
+                // Bridge 1
                 bridgeImg.classList.remove("hidden");
                 bridgeCanvas.classList.add("hidden");
                 bridgeImg.src = 'bridge-1.png';
-                bridgeImg.style.left = "65px";  
-                bridgeImg.style.bottom = "60px"; 
             } 
             else {
                 bridgeImg.classList.add("hidden");
@@ -378,20 +378,24 @@
 
                 let videoFile = '';
                 
+                // Atur posisi spesifik untuk Bridge 2, 3, dan 4
                 if (wrongAttempts === 1) {
                     videoFile = 'bridge-2-fix.mp4';
-                    bridgeCanvas.style.left = "65px";  
-                    bridgeCanvas.style.bottom = "58px"; 
+                    // Bridge 2: Geser ke kanan & ke bawah dikit
+                    bridgeCanvas.style.left = "35%";
+                    bridgeCanvas.style.bottom = "73px";
                 }
                 else if (wrongAttempts === 2) {
                     videoFile = 'bridge-3.mp4';
-                    bridgeCanvas.style.left = "65px";  
-                    bridgeCanvas.style.bottom = "60px"; 
+                    // Bridge 3: Geser ke kanan
+                    bridgeCanvas.style.left = "35%";
+                    bridgeCanvas.style.bottom = "75px";
                 }
                 else {
                     videoFile = 'bridge-4.mp4';
-                    bridgeCanvas.style.left = "65px";  // Digeser ke kanan dikit
-                    bridgeCanvas.style.bottom = "45px"; // Diturunkan lebih banyak khusus bridge-4
+                    // Bridge 4: Geser ke kanan & diturunkan lebih banyak ke bawah
+                    bridgeCanvas.style.left = "35%";
+                    bridgeCanvas.style.bottom = "60px";  /* Diturunkan dari 70px */
                 }
 
                 bridgeVideo.src = videoFile;
