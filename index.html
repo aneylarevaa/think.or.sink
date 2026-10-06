@@ -23,7 +23,6 @@
             overflow: hidden;
         }
 
-        /* CONTAINER UTAMA GAME */
         #game-container {
             position: relative;
             width: 1000px;
@@ -36,7 +35,6 @@
             overflow: hidden;
         }
 
-        /* LOGO GAMBAR DI DALAM GAME */
         #game-logo {
             position: absolute;
             top: 15px;
@@ -47,7 +45,6 @@
             filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5));
         }
 
-        /* LANDING PAGE / MENU UTAMA */
         #main-menu {
             position: absolute;
             top: 0;
@@ -78,7 +75,6 @@
             color: #fffae5;
             text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
             margin-bottom: 8px;
-            letter-spacing: 1px;
         }
 
         .menu-subtitle {
@@ -86,7 +82,6 @@
             color: #dda15e;
             font-weight: 700;
             margin-bottom: 25px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
         }
 
         .play-btn {
@@ -109,17 +104,17 @@
             transform: scale(1.08);
         }
 
-        /* POSISI JEMBATAN (DISESUAIKAN KE TENGAH-KIRI MENGIKUTI SUNGAI) */
-        #bridge-canvas {
+        /* Uji langsung tag video tanpa canvas agar kelihatan */
+        #bridge-video-elem {
             position: absolute;
             bottom: 80px;
             left: 28%;
             transform: translateX(-50%);
-            width: 420px; /* Ukuran proporsional, tidak terlalu besar/kecil */
+            width: 420px;
             z-index: 5;
         }
 
-        #bridge-video-elem {
+        #bridge-canvas {
             display: none;
         }
 
@@ -136,7 +131,6 @@
             animation: popIn 0.3s ease-out forwards;
         }
 
-        /* PAPAN SOAL DI SEBELAH KANAN ATAS */
         #wooden-sign {
             position: absolute;
             top: 25px;
@@ -157,11 +151,9 @@
             font-family: 'Nunito', sans-serif;
             font-size: 0.85rem;
             font-weight: 900;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
             line-height: 1.25;
         }
 
-        /* KERTAS OPSI JAWABAN DI SEBELAH KANAN BAWAH (JARAK DEKAT DARI SOAL) */
         #scroll-options {
             position: absolute;
             top: 145px;
@@ -191,7 +183,6 @@
             text-align: left;
             width: 100%;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: all 0.2s ease;
         }
         .option-btn:hover {
             background-color: #dda15e;
@@ -221,16 +212,13 @@
             cursor: pointer;
             font-weight: 700;
         }
-        .reset-btn:hover { background-color: #bc6c25; color: white; }
     </style>
 </head>
 <body>
 
     <div id="game-container">
-        <!-- Logo -->
         <img id="game-logo" src="logo.png" alt="Logo">
 
-        <!-- Landing Page -->
         <div id="main-menu">
             <img id="menu-logo" src="logo.png" alt="Logo">
             <h1 class="menu-title">Think or Sink</h1>
@@ -238,11 +226,10 @@
             <button class="play-btn" onclick="startGame()">PLAY</button>
         </div>
 
-        <!-- Canvas untuk Video Green Screen Jembatan -->
+        <!-- Tag Video Langsung Tanpa Canvas (Untuk Tes Muncul/Tidaknya) -->
         <video id="bridge-video-elem" muted playsinline></video>
         <canvas id="bridge-canvas"></canvas>
 
-        <!-- Papan Soal & Opsi di Sebelah Kanan -->
         <div id="wooden-sign" class="animate-board">
             <div id="question-text">Loading questions from SheetDB...</div>
         </div>
@@ -266,11 +253,7 @@
         const scrollOptions = document.getElementById("scroll-options");
         const statusMsg = document.getElementById("status-msg");
         const bridgeVideoElem = document.getElementById("bridge-video-elem");
-        const bridgeCanvas = document.getElementById("bridge-canvas");
-        const ctx = bridgeCanvas.getContext("2d", { willReadFrequently: true });
         const mainMenu = document.getElementById("main-menu");
-
-        let videoAnimationId = null;
 
         async function startGame() {
             mainMenu.style.opacity = "0";
@@ -285,7 +268,6 @@
             statusMsg.innerText = "Fetching questions from SheetDB...";
             currentIndex = 0;
             wrongAttempts = 0;
-            stopVideo();
             updateBridgeDisplay();
 
             try {
@@ -306,22 +288,18 @@
                 }
             } catch (error) {
                 console.error("Failed to load SheetDB API:", error);
-                statusMsg.innerText = "⚠ Failed to load data. Please check connection or column names.";
+                statusMsg.innerText = "⚠ Failed to load data.";
             }
         }
 
         function loadQuestion() {
             if (currentIndex >= questions.length) {
-                triggerTransition();
                 questionText.innerText = "🎉 Amazing! You successfully answered all questions!";
                 scrollOptions.innerHTML = `<button class="option-btn" onclick="initGame()">Play Again</button>`;
-                statusMsg.innerText = "Status: Completed!";
                 return;
             }
 
             const q = questions[currentIndex];
-            triggerTransition();
-
             questionText.innerText = `(${currentIndex + 1}/${questions.length}) ${q.question}`;
             scrollOptions.innerHTML = "";
 
@@ -334,88 +312,25 @@
             });
         }
 
-        function triggerTransition() {
-            woodenSign.classList.remove("animate-board");
-            scrollOptions.classList.remove("animate-board");
-            
-            void woodenSign.offsetWidth; 
-            void scrollOptions.offsetWidth;
-
-            woodenSign.classList.add("animate-board");
-            scrollOptions.classList.add("animate-board");
-        }
-
-        function stopVideo() {
-            if (videoAnimationId) {
-                cancelAnimationFrame(videoAnimationId);
-                videoAnimationId = null;
-            }
-            bridgeVideoElem.pause();
-            bridgeVideoElem.currentTime = 0;
-        }
-
         function playVideoFile(filename) {
-            stopVideo();
             bridgeVideoElem.src = filename;
-            
-            bridgeVideoElem.onloadedmetadata = () => {
-                bridgeCanvas.width = bridgeVideoElem.videoWidth;
-                bridgeCanvas.height = bridgeVideoElem.videoHeight;
-            };
-
             bridgeVideoElem.currentTime = 0;
-            bridgeVideoElem.play().then(() => {
-                playGreenScreenEffect();
-            }).catch(e => console.log("Autoplay blocked:", e));
-
-            bridgeVideoElem.onended = () => {
-                cancelAnimationFrame(videoAnimationId);
-            };
+            bridgeVideoElem.play().catch(e => console.log("Play blocked:", e));
         }
 
         function updateBridgeDisplay() {
             if (wrongAttempts === 0) {
-                // Awal game / Normal: bridge-1.mp4
                 playVideoFile('bridge-1.mp4');
             } 
             else if (wrongAttempts === 1) {
-                // Salah ke-1: bridge-2-fix.mp4
                 playVideoFile('bridge-2-fix.mp4');
             } 
             else if (wrongAttempts === 2) {
-                // Salah ke-2: bridge-3.mp4
                 playVideoFile('bridge-3.mp4');
             } 
             else {
-                // Salah ke-3 (Game Over): bridge-4.mp4
                 playVideoFile('bridge-4.mp4');
             }
-        }
-
-        // Fungsi otomatis hapus background hijau (Chroma Key) secara real-time
-        function playGreenScreenEffect() {
-            function processFrame() {
-                if (bridgeVideoElem.paused || bridgeVideoElem.ended) return;
-
-                ctx.drawImage(bridgeVideoElem, 0, 0, bridgeCanvas.width, bridgeCanvas.height);
-                let frame = ctx.getImageData(0, 0, bridgeCanvas.width, bridgeCanvas.height);
-                let l = frame.data.length;
-
-                for (let i = 0; i < l; i += 4) {
-                    let red = frame.data[i];
-                    let green = frame.data[i + 1];
-                    let blue = frame.data[i + 2];
-
-                    // Jika pikselnya dominan hijau, ubah jadi transparan
-                    if (green > 90 && red < 100 && blue < 100) {
-                        frame.data[i + 3] = 0; 
-                    }
-                }
-
-                ctx.putImageData(frame, 0, 0);
-                videoAnimationId = requestAnimationFrame(processFrame);
-            }
-            processFrame();
         }
 
         function checkAnswer(selected, correct) {
@@ -423,19 +338,17 @@
 
             if (isCorrect) {
                 currentIndex++;
-                statusMsg.innerText = "✨ Correct! Bridge is safe, moving to next question...";
+                statusMsg.innerText = "✨ Correct!";
                 setTimeout(() => loadQuestion(), 500);
             } else {
                 wrongAttempts++;
                 updateBridgeDisplay();
 
                 if (wrongAttempts >= 3) {
-                    triggerTransition();
-                    questionText.innerText = "💥 Oh no! The bridge collapsed due to too many mistakes!";
+                    questionText.innerText = "💥 Game Over!";
                     scrollOptions.innerHTML = `<button class="option-btn" onclick="initGame()">Try Again</button>`;
-                    statusMsg.innerText = "Status: Game Over!";
                 } else {
-                    statusMsg.innerText = `❌ Incorrect! Bridge is breaking (Mistake ${wrongAttempts}/3)`;
+                    statusMsg.innerText = `❌ Incorrect! (Mistake ${wrongAttempts}/3)`;
                 }
             }
         }
