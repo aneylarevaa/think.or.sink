@@ -118,6 +118,7 @@
             transform: translateX(-50%);
             width: 600px;
             z-index: 5;
+            opacity: 1;
         }
 
         .hidden {
@@ -240,9 +241,9 @@
         <!-- Jembatan 1 (.png) -->
         <img id="bridge-img" src="bridge-1.png" alt="Bridge">
 
-        <!-- Jembatan 2 Berupa Video (.webm) -->
+        <!-- Jembatan 2 Berupa Video (.mov) -->
         <video id="bridge-video" class="hidden" muted playsinline>
-            <source src="bridge-2.webm" type="video/webm">
+            <source src="bridge-2-fix.mov" type="video/quicktime">
             Your browser does not support the video tag.
         </video>
 
@@ -351,7 +352,7 @@
                 bridgeImg.src = "bridge-1.png";
             } 
             else if (wrongAttempts === 1) {
-                // Salah ke-1: Putar video webm bridge-2 dari awal, lalu diam di frame terakhir
+                // Salah ke-1: Putar video mov bridge-2-fix dari awal, lalu diam di frame terakhir
                 bridgeImg.classList.add("hidden");
                 bridgeVideo.classList.remove("hidden");
                 bridgeVideo.currentTime = 0;
