@@ -444,16 +444,22 @@
             processFrame();
         }
 
-        function checkAnswer(selected, correct) {
+       function checkAnswer(selected, correct) {
             const isCorrect = (selected.trim().toLowerCase() === correct.toLowerCase());
 
             if (isCorrect) {
                 currentIndex++;
+                // SIMPAN POSISI TERAKHIR SUPAYA JEMBATAN TETAP STAY DI SINI DAN TIDAK HANCUR/BERUBAH
+                currentBridgeLevel = wrongAttempts; 
+                
                 statusMsg.innerText = "✨ Correct! Bridge is safe, moving to next question...";
                 setTimeout(() => loadQuestion(), 500);
             } else {
                 wrongAttempts++;
                 updateBridgeDisplay();
+
+                // Update juga level terakhir yang tercapai saat salah
+                currentBridgeLevel = wrongAttempts;
 
                 if (wrongAttempts >= 3) {
                     triggerTransition();
