@@ -107,19 +107,23 @@
             transform: scale(1.08);
         }
 
-        /* POSISI JEMBATAN (MENGIKUTI SUNGAI) */
-        #bridge-img, #bridge-canvas {
+        /* --- PENGATURAN POSISI MASING-MASING JEMBATAN --- */
+        
+        /* Bridge 1: Gambar Statis */
+        #bridge-img {
             position: absolute;
-            bottom: 80px;
-            left: 28%;
+            bottom: 75px;  /* Sesuaikan tinggi vertikal */
+            left: 33%;     /* Digeser ke kanan */
             transform: translateX(-50%);
             width: 420px;
             z-index: 5;
         }
 
-        /* Video asli disembunyikan karena diproses melalui canvas green screen */
-        #bridge-video {
-            display: none;
+        /* Bridge 2, 3, 4: Canvas Video Green Screen */
+        #bridge-canvas {
+            position: absolute;
+            width: 420px;
+            z-index: 5;
         }
 
         .hidden {
@@ -239,7 +243,7 @@
         <!-- Jembatan 1 (Gambar PNG Statis) -->
         <img id="bridge-img" src="bridge-1.png" alt="Bridge 1">
 
-        <!-- Video & Canvas untuk Green Screen Remover Presisi Tinggi -->
+        <!-- Video & Canvas untuk Green Screen Remover -->
         <video id="bridge-video" muted playsinline></video>
         <canvas id="bridge-canvas" class="hidden"></canvas>
 
@@ -256,7 +260,7 @@
     </div>
 
     <script>
-        const SPREADSHEET_API_URL = "https://sheetdb.io/api/v1/sf6lawxbra0x6";
+        const SSPREADSHEET_API_URL = "https://sheetdb.io/api/v1/sf6lawxbra0x6";
 
         let questions = [];
         let currentIndex = 0;
@@ -358,20 +362,36 @@
             stopGreenScreenVideo();
 
             if (wrongAttempts === 0) {
-                // Awal game: Tampilkan gambar PNG statis
+                // Bridge 1 (Kurang ke kanan)
                 bridgeImg.classList.remove("hidden");
                 bridgeCanvas.classList.add("hidden");
                 bridgeImg.src = 'bridge-1.png';
             } 
             else {
-                // Ketika salah: Putar video MP4 dengan efek Green Screen aman
                 bridgeImg.classList.add("hidden");
                 bridgeCanvas.classList.remove("hidden");
 
                 let videoFile = '';
-                if (wrongAttempts === 1) videoFile = 'bridge-2-fix.mp4';
-                else if (wrongAttempts === 2) videoFile = 'bridge-3.mp4';
-                else videoFile = 'bridge-4.mp4';
+                
+                // Atur posisi spesifik untuk Bridge 2, 3, dan 4
+                if (wrongAttempts === 1) {
+                    videoFile = 'bridge-2-fix.mp4';
+                    // Bridge 2: Kurang ke kanan & ke bawah dikit
+                    bridgeCanvas.style.left = "33%";
+                    bridgeCanvas.style.bottom = "73px";
+                }
+                else if (wrongAttempts === 2) {
+                    videoFile = 'bridge-3.mp4';
+                    // Bridge 3: Kurang ke kanan
+                    bridgeCanvas.style.left = "33%";
+                    bridgeCanvas.style.bottom = "75px";
+                }
+                else {
+                    videoFile = 'bridge-4.mp4';
+                    // Bridge 4: Kurang ke kanan & ke bawah
+                    bridgeCanvas.style.left = "33%";
+                    bridgeCanvas.style.bottom = "70px";
+                }
 
                 bridgeVideo.src = videoFile;
                 
@@ -391,7 +411,6 @@
             }
         }
 
-        // Fungsi Chroma Key presisi tinggi agar jembatan tidak transparan/hilang
         function playGreenScreenEffect() {
             function processFrame() {
                 if (bridgeVideo.paused || bridgeVideo.ended) return;
@@ -405,10 +424,8 @@
                     let green = frame.data[i + 1];
                     let blue = frame.data[i + 2];
 
-                    // Kriteria warna hijau yang dihapus dibuat lebih spesifik (hanya hijau terang murni)
-                    // agar objek jembatan tidak ikut transparan
                     if (green > 105 && red < 90 && blue < 90 && green > red + 25 && green > blue + 25) {
-                        frame.data[i + 3] = 0; // Buat transparan
+                        frame.data[i + 3] = 0; 
                     }
                 }
 
