@@ -107,20 +107,21 @@
             transform: scale(1.08);
         }
 
-        /* --- POSISI KUNCI MUTLAK: DIJAMIN TIDAK BERGESER ATAU NAIK --- */
+        /* --- POSISI JEMBATAN --- */
         #bridge-img, #bridge-canvas {
             position: absolute;
-            bottom: 75px;  /* Posisi bawah dikunci tetap */
-            left: 35%;     /* Posisi kiri dikunci tetap */
+            bottom: 75px;  
+            left: 35%;     
             transform: translateX(-50%);
             width: 420px;
             z-index: 5;
         }
-        /* --- POSISI KARAKTER (BERDIRI DI ATAS JEMBATAN) --- */
+
+        /* --- POSISI KARAKTER (PNG / VIDEO) --- */
         #game-character {
             position: absolute;
             bottom: 115px;  
-            left: 20px;     
+            left: 22px;     
             width: 90px;  
             height: auto;
             z-index: 6;    
@@ -128,7 +129,6 @@
             transition: left 0.4s ease, bottom 0.4s ease;
         }
 
-        /* Elemen Video Tersembunyi */
         #bridge-video {
             display: none;
         }
@@ -146,7 +146,7 @@
             animation: popIn 0.3s ease-out forwards;
         }
 
-        /* PAPAN SOAL DI SEBELAH KANAN ATAS */
+        /* PAPAN SOAL */
         #wooden-sign {
             position: absolute;
             top: 25px;
@@ -170,7 +170,7 @@
             line-height: 1.25;
         }
 
-        /* KERTAS OPSI JAWABAN DI SEBELAH KANAN BAWAH */
+        /* KERTAS OPSI */
         #scroll-options {
             position: absolute;
             top: 145px;
@@ -247,17 +247,17 @@
             <button class="play-btn" onclick="startGame()">PLAY</button>
         </div>
 
-        <!-- Jembatan 1 (Gambar PNG Statis) -->
+        <!-- Jembatan 1 -->
         <img id="bridge-img" src="bridge-1.png" alt="Bridge 1">
 
-        <!-- Video & Canvas untuk Green Screen Remover -->
+        <!-- Video & Canvas Green Screen -->
         <video id="bridge-video" muted playsinline></video>
         <canvas id="bridge-canvas" class="hidden"></canvas>
         
-        <!-- Karakter Interaktif diubah jadi <video> agar bisa memutar file -fall.webm saat jatuh -->
-        <video id="game-character" autoplay muted playsinline></video>
+        <!-- Karakter Awal menggunakan tag <img> agar PNG tampil sempurna -->
+        <img id="game-character" src="" alt="Character">
 
-        <!-- Papan Soal & Opsi di Kanan -->
+        <!-- Papan Soal & Opsi -->
         <div id="wooden-sign" class="animate-board">
             <div id="question-text">Loading questions from SheetDB...</div>
         </div>
@@ -273,13 +273,13 @@
         const SPREADSHEET_API_URL = "https://sheetdb.io/api/v1/sf6lawxbra0x6";
 
         let questions = [];
-        // Struktur data dipasangkan agar tahu file PNG mana yang harus berubah ke WebM mana
+        // Pasangan asset: Standby pakai PNG, jatuh pakai WebM
         const characterAssets = [
             { normal: 'animate-1.png', fall: 'animate-1-fall.webm' },
             { normal: 'animate-2.png', fall: 'animate-2-fall.webm' },
             { normal: 'animate-3.png', fall: 'animate-3-fall.webm' }
         ];
-        let selectedChar = null; // Menyimpan objek karakter yang terpilih di game ini
+        let selectedChar = null; 
         let currentIndex = 0;
         let wrongAttempts = 0; 
         let currentBridgeLevel = 0;
@@ -310,12 +310,19 @@
             wrongAttempts = 0;
             currentBridgeLevel = 0; 
 
-            // Pilih random pasangan karakter
+            // Reset elemen karakter ke tag <img> jika sebelumnya berubah jadi <video> karena Game Over
+            let charContainer = document.getElementById("game-character");
+            if (charContainer.tagName.toLowerCase() !== 'img') {
+                const newImg = document.createElement('img');
+                newImg.id = "game-character";
+                newImg.alt = "Character";
+                charContainer.replaceWith(newImg);
+            }
+
             selectedChar = characterAssets[Math.floor(Math.random() * characterAssets.length)];
             const charEl = document.getElementById("game-character");
-            charEl.src = selectedChar.normal; // Memuat PNG (animate-1.png, animate-2.png, atau animate-3.png)
-            charEl.loop = false;
-            charEl.style.left = "22%";
+            charEl.src = selectedChar.normal; // Load PNG standby
+            charEl.style.left = "22px";
             charEl.style.bottom = "115px";
 
             stopGreenScreenVideo();
@@ -356,7 +363,7 @@
             triggerTransition();
 
             wrongAttempts = currentBridgeLevel; 
-            document.getElementById("game-character").style.left = "15px";
+            document.getElementById("game-character").style.left = "15%";
 
             questionText.innerText = `(${currentIndex + 1}/${questions.length}) ${q.question}`;
             scrollOptions.innerHTML = "";
@@ -388,7 +395,7 @@
             bridgeVideo.currentTime = 0;
         }
 
-      function updateBridgeDisplay() {
+        function updateBridgeDisplay() {
             stopGreenScreenVideo();
 
             if (wrongAttempts === 0) {
@@ -402,18 +409,17 @@
 
                 let videoFile = '';
                 
-                // --- ATUR POSISI BOTTOM BERDASARKAN LEVEL JEMBATAN ---
                 if (wrongAttempts === 1) {
                     videoFile = 'bridge-2-fix.mp4';
-                    bridgeCanvas.style.bottom = "75px"; // Posisi standar sejajar Bridge 1
+                    bridgeCanvas.style.bottom = "75px"; 
                 }
                 else if (wrongAttempts === 2) {
                     videoFile = 'bridge-3.mp4';
-                    bridgeCanvas.style.bottom = "75px"; // Posisi standar sejajar Bridge 1
+                    bridgeCanvas.style.bottom = "75px"; 
                 }
                 else {
                     videoFile = 'bridge-4.mp4';
-                    bridgeCanvas.style.bottom = "50px"; // <-- TURUNKAN INI! Angka makin kecil makin ke bawah
+                    bridgeCanvas.style.bottom = "50px"; 
                 }
 
                 bridgeVideo.src = videoFile;
@@ -433,6 +439,7 @@
                 };
             }
         }
+
         function playGreenScreenEffect() {
             function processFrame() {
                 if (bridgeVideo.paused || bridgeVideo.ended) return;
@@ -461,7 +468,7 @@
             const isCorrect = (selected.trim().toLowerCase() === correct.toLowerCase());
             const charEl = document.getElementById("game-character");
             charEl.style.left = "35%";
-            charEl.style.bottom = "135px"; // Naik sedikit agar pas berdiri di atas papan jembatan
+            charEl.style.bottom = "135px"; 
 
             if (isCorrect) {
                 currentIndex++;
@@ -476,9 +483,18 @@
                 if (wrongAttempts >= 3) {
                     triggerTransition();
 
-                    // --- UBAH KE ANIMASI JATUH WEBM SESUAI KARAKTER YANG AKTIF ---
-                    charEl.src = selectedChar.fall; // Akan otomatis jadi animate-1-fall.webm / 2 / 3
-                    charEl.play().catch(e => console.log("Autoplay prevented:", e));
+                    // Ganti tag <img> ke <video> secara otomatis agar bisa mutar file .webm jatuh
+                    const oldChar = document.getElementById("game-character");
+                    const videoChar = document.createElement("video");
+                    videoChar.id = "game-character";
+                    videoChar.src = selectedChar.fall; // animate-1-fall.webm / 2 / 3
+                    videoChar.autoplay = true;
+                    videoChar.muted = true;
+                    videoChar.playsInline = true;
+                    videoChar.style.cssText = oldChar.style.cssText; // Salin posisi CSS aslinya
+
+                    oldChar.replaceWith(videoChar);
+                    videoChar.play().catch(e => console.log("Autoplay prevented:", e));
 
                     questionText.innerText = "💥 Oh no! The bridge collapsed due to too many mistakes!";
                     scrollOptions.innerHTML = `<button class="option-btn" onclick="initGame()">Try Again</button>`;
