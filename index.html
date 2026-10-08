@@ -121,12 +121,12 @@
         #game-character {
             position: absolute;
             bottom: 115px;  
-            left: -80px;    /* Di luar layar sebelah kiri sebelum tombol play ditekan */
+            left: -80px;    /* Di luar layar sebelah kiri sebelum game dimulai */
             width: 90px;  
             height: auto;
             z-index: 6;    
             transform: translateX(-50%);
-            transition: left 0.8s ease, bottom 0.4s ease; /* Transisi halus saat jalan masuk */
+            transition: left 0.8s ease, bottom 0.4s ease;
         }
 
         /* --- ANIMASI LOMPAT KECIL SAAT JAWABAN BENAR --- */
@@ -251,12 +251,12 @@
         <img id="game-logo" src="logo.png" alt="Logo">
 
         <!-- Landing Page -->
-        <div id="main-menu">
+        <main id="main-menu">
             <img id="menu-logo" src="logo.png" alt="Logo">
             <h1 class="menu-title">Think or Sink</h1>
             <p class="menu-subtitle">Test your knowledge before the bridge collapses!</p>
             <button class="play-btn" onclick="startGame()">PLAY</button>
-        </div>
+        </main>
 
         <!-- Jembatan 1 -->
         <img id="bridge-img" src="bridge-1.png" alt="Bridge 1">
@@ -317,11 +317,11 @@
 
             await initGame();
 
-            // --- SAAT TOMBOL PLAY DIKLIK: Karakter berjalan masuk dari kiri ke tepi jembatan ---
+            // --- SAAT PLAY: Karakter berjalan masuk dari kiri ke depan pohon kelapa dekat jembatan ---
             setTimeout(() => {
                 const charEl = document.getElementById("game-character");
                 if(charEl && charEl.tagName.toLowerCase() === 'img') {
-                    charEl.style.left = "22px"; // Berhenti di tepi jembatan
+                    charEl.style.left = "17px"; // Posisi persis di depan pohon kelapa dekat jembatan
                 }
             }, 100);
         }
@@ -345,7 +345,7 @@
             const charEl = document.getElementById("game-character");
             charEl.src = selectedChar.normal; // Load PNG standby
             
-            // Set posisi awal tersembunyi di luar layar sebelah kiri sebelum game dimulai
+            // Set posisi awal di luar layar sebelah kiri
             charEl.style.left = "-80px";
             charEl.style.bottom = "115px";
 
@@ -491,7 +491,7 @@
             const isCorrect = (selected.trim().toLowerCase() === correct.toLowerCase());
             const charEl = document.getElementById("game-character");
 
-            // --- SETELAH PERTANYAAN PERTAMA DIJAWAB, KARAKTER BERJALAN MASUK KE TENGAH JEMBATAN ---
+            // --- SETELAH PERTANYAAN PERTAMA DIJAWAB, KARAKTER MAJU KE TENGAH JEMBATAN ---
             charEl.style.left = "35%";     
             charEl.style.bottom = "135px";  
 
