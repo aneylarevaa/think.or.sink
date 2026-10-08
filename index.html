@@ -107,21 +107,22 @@
             transform: scale(1.08);
         }
 
-        /* --- POSISI KUNCI MUTLAK: DIJAMIN TIDAK BERGESER ATAU NAIK --- */
+        /* --- POSISI JEMBATAN --- */
         #bridge-img, #bridge-canvas {
             position: absolute;
-            bottom: 75px;  /* Posisi bawah dikunci tetap */
-            left: 35%;     /* Posisi kiri dikunci tetap */
+            bottom: 75px; 
+            left: 35px;     
             transform: translateX(-50%);
             width: 420px;
             z-index: 5;
         }
-        /* --- POSISI KARAKTER (BERDIRI DI KIRI JEMBATAN) --- */
+        
+        /* --- POSISI KARAKTER (PNG / WEBM) --- */
         #game-character {
             position: absolute;
             bottom: 110px;  
-            left: 35%;     
-            width: 130px;  
+            left: 35%;      
+            width: 130px;   
             height: auto;
             z-index: 6;    
             transform: translateX(-50%);
@@ -253,8 +254,9 @@
         <!-- Video & Canvas untuk Green Screen Remover -->
         <video id="bridge-video" muted playsinline></video>
         <canvas id="bridge-canvas" class="hidden"></canvas>
-        <!-- Karakter Interaktif (Format Video WebM Transparan) -->
-        <video id="game-character" autoplay muted playsinline loop></video>
+        
+        <!-- Karakter Interaktif (Kembali pakai IMG agar PNG & WebM bisa jalan) -->
+        <img id="game-character" src="" alt="Character">
 
         <!-- Papan Soal & Opsi di Kanan -->
         <div id="wooden-sign" class="animate-board">
@@ -273,11 +275,11 @@
 
         let questions = [];
         const characterAssets = [
-            { normal: 'animate-1.webm', fall: 'animate-1-fall.webm' },
-    { normal: 'animate-2.webm', fall: 'animate-2-fall.webm' },
-    { normal: 'animate-3.webm', fall: 'animate-3-fall.webm' }
-];
-        let selectedChar = null; // Menyimpan karakter yang sedang aktif
+            { normal: 'animate-1.png', fall: 'animate-1-fall.webm' },
+            { normal: 'animate-2.png', fall: 'animate-2-fall.webm' },
+            { normal: 'animate-3.png', fall: 'animate-3-fall.webm' }
+        ];
+        let selectedChar = null; 
         let currentIndex = 0;
         let wrongAttempts = 0; 
         let currentBridgeLevel = 0;
@@ -308,15 +310,11 @@
             wrongAttempts = 0;
             currentBridgeLevel = 0; 
             
-            // --- GANTI BAGIAN INI ---
             selectedChar = characterAssets[Math.floor(Math.random() * characterAssets.length)];
             const charEl = document.getElementById("game-character");
-            charEl.src = selectedChar.normal;
-            charEl.loop = true; 
-            charEl.style.left = "35%";     // Stay di atas jembatan
+            charEl.src = selectedChar.normal; // Memuat PNG standby
+            charEl.style.left = "35%";     
             charEl.style.bottom = "110px";
-            charEl.play().catch(e => console.log("Autoplay prevented:", e));
-            // ------------------------
 
             stopGreenScreenVideo();
             updateBridgeDisplay();
@@ -356,7 +354,7 @@
             triggerTransition();
 
             wrongAttempts = currentBridgeLevel; 
-            document.getElementById("game-character").style.left = "15%";
+            document.getElementById("game-character").style.left = "15px";
 
             questionText.innerText = `(${currentIndex + 1}/${questions.length}) ${q.question}`;
             scrollOptions.innerHTML = "";
@@ -402,18 +400,17 @@
 
                 let videoFile = '';
                 
-                // --- ATUR POSISI BOTTOM BERDASARKAN LEVEL JEMBATAN ---
                 if (wrongAttempts === 1) {
                     videoFile = 'bridge-2-fix.mp4';
-                    bridgeCanvas.style.bottom = "75px"; // Posisi standar sejajar Bridge 1
+                    bridgeCanvas.style.bottom = "75px"; 
                 }
                 else if (wrongAttempts === 2) {
                     videoFile = 'bridge-3.mp4';
-                    bridgeCanvas.style.bottom = "75px"; // Posisi standar sejajar Bridge 1
+                    bridgeCanvas.style.bottom = "75px"; 
                 }
                 else {
                     videoFile = 'bridge-4.mp4';
-                    bridgeCanvas.style.bottom = "50px"; // <-- TURUNKAN INI! Angka makin kecil makin ke bawah (sesuaikan misal 40px atau 50px biar gak naik)
+                    bridgeCanvas.style.bottom = "50px"; 
                 }
 
                 bridgeVideo.src = videoFile;
@@ -460,7 +457,6 @@
         function checkAnswer(selected, correct) {
             const isCorrect = (selected.trim().toLowerCase() === correct.toLowerCase());
             
-            // Ambil elemen karakter terlebih dahulu agar tidak error
             const charEl = document.getElementById("game-character");
             charEl.style.bottom = "135px"; 
 
@@ -475,18 +471,15 @@
                 updateBridgeDisplay();
 
                 if (wrongAttempts >= 3) {
-    triggerTransition();
+                    triggerTransition();
 
-    // Ganti video ke versi jatuh (-fall.webm) dan matikan loop agar berhenti di akhir animasi jatuh
-    const charEl = document.getElementById("game-character");
-    charEl.src = selectedChar.fall;
-    charEl.loop = false; 
-    charEl.play().catch(e => console.log("Autoplay prevented:", e));
+                    // Ganti ke animasi jatuh WebM (-fall.webm)
+                    charEl.src = selectedChar.fall; 
 
-    questionText.innerText = "💥 Oh no! The bridge collapsed due to too many mistakes!";
-    scrollOptions.innerHTML = `<button class="option-btn" onclick="initGame()">Try Again</button>`;
-    statusMsg.innerText = "Status: Game Over!";
-} else {
+                    questionText.innerText = "💥 Oh no! The bridge collapsed due to too many mistakes!";
+                    scrollOptions.innerHTML = `<button class="option-btn" onclick="initGame()">Try Again</button>`;
+                    statusMsg.innerText = "Status: Game Over!";
+                } else {
                     statusMsg.innerText = `❌ Incorrect! Bridge is breaking (Mistake ${wrongAttempts}/3)`;
                 }
             }
