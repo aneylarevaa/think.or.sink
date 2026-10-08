@@ -283,7 +283,11 @@
     <script>
         const SPREADSHEET_API_URL = "https://sheetdb.io/api/v1/sf6lawxbra0x6";
 
-        let questions = [];
+        // --- JUMLAH SOAL SETIAP KALI MAIN ---
+        const QUESTIONS_PER_GAME = 10;
+
+        let allQuestions = [];   // semua soal dari spreadsheet (diambil sekali saja)
+        let questions = [];      // 10 soal yang dipakai di ronde ini
         const characterAssets = [
             { normal: 'animate-1.png', fall: 'animate-1-fall.webm' },
             { normal: 'animate-2.png', fall: 'animate-2-fall.webm' },
@@ -302,6 +306,66 @@
         // --- EFEK AUDIO ---
         const yaySound = new Audio('yeay.mp3');
         const sadSound = new Audio('sedih.mp3');
+        const gameOverSound = new Audio('game-over.mp3');
+
+        // --- RIWAYAT SOAL YANG SUDAH PERNAH MUNCUL (disimpan di browser) ---
+        const USED_STORAGE_KEY = "thinkOrSink_usedQuestions";
+        let usedKeys = new Set();
+
+        function loadUsedKeys() {
+            try {
+                return new Set(JSON.parse(localStorage.getItem(USED_STORAGE_KEY) || "[]"));
+            } catch (e) {
+                return new Set();
+            }
+        }
+
+        function saveUsedKeys() {
+            try {
+                localStorage.setItem(USED_STORAGE_KEY, JSON.stringify([...usedKeys]));
+            } catch (e) {
+                console.log("localStorage tidak tersedia, riwayat soal hanya disimpan selama halaman terbuka.");
+            }
+        }
+
+        function shuffle(arr) {
+            const a = arr.slice();
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        // Pilih 10 soal acak. Soal yang sudah muncul tidak dipakai lagi
+        // sampai SEMUA soal di spreadsheet sudah pernah muncul.
+        function pickQuestionsForGame() {
+            const n = QUESTIONS_PER_GAME;
+
+            // Buang riwayat soal yang sudah tidak ada lagi di spreadsheet
+            const validKeys = new Set(allQuestions.map(q => q.question));
+            usedKeys = new Set([...usedKeys].filter(k => validKeys.has(k)));
+
+            // Ambil dulu dari soal yang belum pernah muncul
+            const fresh = shuffle(allQuestions.filter(q => !usedKeys.has(q.question)));
+            let picked = fresh.slice(0, n);
+
+            if (picked.length < n) {
+                // Soal baru habis -> mulai siklus baru, lengkapi sisanya dari semua soal
+                // (tanpa duplikat di ronde yang sama)
+                const pickedKeys = new Set(picked.map(q => q.question));
+                const need = n - picked.length;
+                const refill = shuffle(allQuestions.filter(q => !pickedKeys.has(q.question))).slice(0, need);
+
+                usedKeys = new Set(refill.map(q => q.question)); // siklus baru dimulai
+                picked = picked.concat(refill);
+            } else {
+                picked.forEach(q => usedKeys.add(q.question));
+            }
+
+            saveUsedKeys();
+            return shuffle(picked); // acak urutannya juga
+        }
 
         const woodenSign = document.getElementById("wooden-sign");
         const questionText = document.getElementById("question-text");
@@ -339,6 +403,10 @@
             wrongAttempts = 0;
             currentBridgeLevel = 0; 
 
+            // Hentikan audio game over kalau sedang main (misal klik Try Again / Restart)
+            gameOverSound.pause();
+            gameOverSound.currentTime = 0;
+
             // Reset elemen karakter ke tag <img> jika sebelumnya berubah jadi <video> karena Game Over
             let charContainer = document.getElementById("game-character");
             if (charContainer.tagName.toLowerCase() !== 'img') {
@@ -363,16 +431,24 @@
             walkToStandby(); // karakter jalan dari kiri ke pinggir jembatan
 
             try {
-                const response = await fetch(SPREADSHEET_API_URL);
-                const data = await response.json();
-                
-                questions = data.map(row => ({
-                    question: row.question,
-                    options: [row.optionA, row.optionB, row.optionC, row.optionD],
-                    answer: String(row.correctAnswer).trim()
-                }));
+                // Ambil data dari SheetDB hanya sekali (restart tidak fetch ulang)
+                if (allQuestions.length === 0) {
+                    const response = await fetch(SPREADSHEET_API_URL);
+                    const data = await response.json();
 
-                if (questions.length > 0) {
+                    allQuestions = data
+                        .filter(row => row.question && String(row.question).trim() !== "")
+                        .map(row => ({
+                            question: row.question,
+                            options: [row.optionA, row.optionB, row.optionC, row.optionD],
+                            answer: String(row.correctAnswer).trim()
+                        }));
+
+                    usedKeys = loadUsedKeys();
+                }
+
+                if (allQuestions.length > 0) {
+                    questions = pickQuestionsForGame();
                     loadQuestion();
                     statusMsg.innerText = "Status: Answer the question above!";
                 } else {
@@ -543,6 +619,11 @@
 
                     oldChar.replaceWith(videoChar);
                     videoChar.play().catch(e => console.log("Autoplay prevented:", e));
+
+                    // --- AUDIO GAME OVER: diputar bersamaan dengan animasi jatuh ---
+                    sadSound.pause(); // hentikan suara "salah" supaya tidak tumpang tindih
+                    gameOverSound.currentTime = 0;
+                    gameOverSound.play().catch(e => console.log("Audio play blocked:", e));
 
                     questionText.innerText = "💥 Oh no! The bridge collapsed due to too many mistakes!";
                     scrollOptions.innerHTML = `<button class="option-btn" onclick="initGame()">Try Again</button>`;
