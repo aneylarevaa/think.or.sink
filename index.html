@@ -337,7 +337,7 @@
             const charEl = document.getElementById("game-character");
             charEl.src = selectedChar.normal; // Load PNG standby
             
-            // Saat baru klik PLAY, karakter diam di kiri jembatan (left: 22px)
+            // Soal pertama: Karakter tetap diam di luar/pinggir kiri jembatan
             charEl.style.left = "22px";
             charEl.style.bottom = "115px";
 
@@ -380,10 +380,8 @@
 
             wrongAttempts = currentBridgeLevel; 
 
-            // Karakter baru berjalan maju ke tengah jembatan (35%) saat soal pertama/berikutnya dimuat
-            const charEl = document.getElementById("game-character");
-            charEl.style.left = "35%";     
-            charEl.style.bottom = "135px";  
+            // Hapus perubahan posisi di sini supaya soal pertama karakter tetap di pinggir.
+            // Posisi karakter akan diatur ke tengah jembatan di dalam fungsi checkAnswer() setelah soal pertama dijawab.
 
             questionText.innerText = `(${currentIndex + 1}/${questions.length}) ${q.question}`;
             scrollOptions.innerHTML = "";
@@ -487,6 +485,10 @@
         function checkAnswer(selected, correct) {
             const isCorrect = (selected.trim().toLowerCase() === correct.toLowerCase());
             const charEl = document.getElementById("game-character");
+
+            // --- SETELAH PERTANYAAN PERTAMA DIJAWAB, KARAKTER LANGSUNG MAJU KE TENGAH JEMBATAN ---
+            charEl.style.left = "35%";     
+            charEl.style.bottom = "135px";  
 
             if (isCorrect) {
                 // Efek suara & lompat gembira saat benar
