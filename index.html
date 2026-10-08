@@ -120,7 +120,7 @@
         /* --- POSISI KARAKTER (PNG / VIDEO) --- */
         #game-character {
             position: absolute;
-            bottom: 135px;  
+            bottom: 115px;  
             left: 22px;     
             width: 90px;  
             height: auto;
@@ -284,6 +284,7 @@
         const SPREADSHEET_API_URL = "https://sheetdb.io/api/v1/sf6lawxbra0x6";
 
         let questions = [];
+        // Pasangan asset: Standby pakai PNG, jatuh pakai WebM
         const characterAssets = [
             { normal: 'animate-1.png', fall: 'animate-1-fall.webm' },
             { normal: 'animate-2.png', fall: 'animate-2-fall.webm' },
@@ -380,9 +381,9 @@
 
             wrongAttempts = currentBridgeLevel; 
 
-            // --- SETELAH PERTANYAAN PERTAMA, KARAKTER BERGERAK KE TENGAH JEMBATAN ---
+            // --- SETELAH PERTANYAAN PERTAMA, KARAKTER BERGERAK KE TENGAH JEMBATAN ("35%") ---
             const charEl = document.getElementById("game-character");
-            charEl.style.left = "35px";     // Maju ke tengah jembatan
+            charEl.style.left = "35%";     // Posisi pas di tengah jembatan (sesuai kode lamamu)
             charEl.style.bottom = "135px";  // Naik pas di atas jembatan
 
             questionText.innerText = `(${currentIndex + 1}/${questions.length}) ${q.question}`;
