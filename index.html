@@ -294,6 +294,10 @@
         let wrongAttempts = 0; 
         let currentBridgeLevel = 0;
         let videoAnimationId = null;
+
+        // --- POSISI STANDBY KARAKTER (pinggir kiri jembatan / depan pohon kelapa) ---
+        const STANDBY_LEFT = "150px";   // geser angka ini kalau mau lebih kiri/kanan
+        const STANDBY_BOTTOM = "125px"; // geser kalau kakinya kurang pas menapak tanah
         
         // --- EFEK AUDIO ---
         const yaySound = new Audio('yeay.mp3');
@@ -315,14 +319,17 @@
                 mainMenu.style.display = "none";
             }, 400);
 
-            await initGame();
+            await initGame(); // jalan masuk karakter sudah diurus di dalam initGame
+        }
 
-            // --- SAAT PLAY: Karakter berjalan masuk dari kiri ke depan pohon kelapa dekat jembatan ---
+        // --- KARAKTER JALAN DARI UJUNG KIRI KE PINGGIR JEMBATAN (STANDBY) ---
+        function walkToStandby() {
+            const charEl = document.getElementById("game-character");
+            if (!charEl) return;
             setTimeout(() => {
-                const charEl = document.getElementById("game-character");
-                if(charEl && charEl.tagName.toLowerCase() === 'img') {
-                    charEl.style.left = "17px"; // Posisi persis di depan pohon kelapa dekat jembatan
-                }
+                charEl.style.transition = "left 2s ease-out, bottom 0.4s ease"; // jalan masuk lebih pelan
+                charEl.style.left = STANDBY_LEFT;
+                charEl.style.bottom = STANDBY_BOTTOM;
             }, 100);
         }
 
@@ -344,13 +351,16 @@
             selectedChar = characterAssets[Math.floor(Math.random() * characterAssets.length)];
             const charEl = document.getElementById("game-character");
             charEl.src = selectedChar.normal; // Load PNG standby
-            
-            // Set posisi awal di luar layar sebelah kiri
+
+            // Taruh di luar layar tanpa animasi (supaya tidak "meluncur mundur")
+            charEl.style.transition = "none";
             charEl.style.left = "-80px";
             charEl.style.bottom = "115px";
+            void charEl.offsetWidth; // paksa browser menerapkan posisi dulu
 
             stopGreenScreenVideo();
             updateBridgeDisplay();
+            walkToStandby(); // karakter jalan dari kiri ke pinggir jembatan
 
             try {
                 const response = await fetch(SPREADSHEET_API_URL);
@@ -492,6 +502,7 @@
             const charEl = document.getElementById("game-character");
 
             // --- SETELAH PERTANYAAN PERTAMA DIJAWAB, KARAKTER MAJU KE TENGAH JEMBATAN ---
+            charEl.style.transition = ""; // balik ke transisi default CSS (0.8s)
             charEl.style.left = "35%";     
             charEl.style.bottom = "135px";  
 
