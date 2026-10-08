@@ -459,8 +459,10 @@
 
         function checkAnswer(selected, correct) {
             const isCorrect = (selected.trim().toLowerCase() === correct.toLowerCase());
-           
-charEl.style.bottom = "135px"; // Naik sedikit agar pas berdiri di atas papan jembatan
+            
+            // Ambil elemen karakter terlebih dahulu agar tidak error
+            const charEl = document.getElementById("game-character");
+            charEl.style.bottom = "135px"; 
 
             if (isCorrect) {
                 currentIndex++;
