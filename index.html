@@ -307,6 +307,36 @@
         const yaySound = new Audio('yeay.mp3');
         const sadSound = new Audio('sedih.mp3');
         const gameOverSound = new Audio('game-over.mp3');
+        gameOverSound.preload = "auto";
+
+        // --- PRELOAD ASET BERAT (video jembatan & animasi jatuh) ---
+        // File diunduh lebih dulu di belakang layar jadi saat game over langsung main tanpa loading.
+        const preloadedURLs = {};
+
+        async function preloadAsset(file) {
+            if (preloadedURLs[file]) return;
+            try {
+                const res = await fetch(file);
+                if (!res.ok) throw new Error("HTTP " + res.status);
+                const blob = await res.blob();
+                preloadedURLs[file] = URL.createObjectURL(blob);
+            } catch (e) {
+                console.log("Preload gagal, pakai file langsung:", file, e);
+            }
+        }
+
+        // Kalau belum selesai di-preload, otomatis pakai nama file biasa
+        function getAsset(file) {
+            return preloadedURLs[file] || file;
+        }
+
+        async function preloadGameAssets() {
+            // Urutan prioritas: animasi jatuh karakter yang dipilih dulu, lalu video jembatan
+            await preloadAsset(selectedChar.fall);
+            await preloadAsset('bridge-2-fix.mp4');
+            await preloadAsset('bridge-3.mp4');
+            await preloadAsset('bridge-4.mp4');
+        }
 
         // --- RIWAYAT SOAL YANG SUDAH PERNAH MUNCUL (disimpan di browser) ---
         const USED_STORAGE_KEY = "thinkOrSink_usedQuestions";
@@ -429,6 +459,7 @@
             stopGreenScreenVideo();
             updateBridgeDisplay();
             walkToStandby(); // karakter jalan dari kiri ke pinggir jembatan
+            preloadGameAssets(); // unduh video jembatan & animasi jatuh di belakang layar
 
             try {
                 // Ambil data dari SheetDB hanya sekali (restart tidak fetch ulang)
@@ -531,7 +562,7 @@
                     bridgeCanvas.style.bottom = "50px"; 
                 }
 
-                bridgeVideo.src = videoFile;
+                bridgeVideo.src = getAsset(videoFile);
                 
                 bridgeVideo.onloadedmetadata = () => {
                     bridgeCanvas.width = bridgeVideo.videoWidth;
@@ -611,7 +642,8 @@
                     const oldChar = document.getElementById("game-character");
                     const videoChar = document.createElement("video");
                     videoChar.id = "game-character";
-                    videoChar.src = selectedChar.fall; 
+                    videoChar.preload = "auto";
+                    videoChar.src = getAsset(selectedChar.fall); 
                     videoChar.autoplay = true;
                     videoChar.muted = true;
                     videoChar.playsInline = true;
