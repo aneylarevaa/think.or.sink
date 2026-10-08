@@ -132,8 +132,8 @@
         /* --- ANIMASI LOMPAT KECIL SAAT JAWABAN BENAR --- */
         @keyframes charJump {
             0% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(-22px); } /* Lompat ke atas */
-            100% { transform: translateX(-50%) translateY(0); } /* Kembali ke posisi semula */
+            50% { transform: translateX(-50%) translateY(-22px); }
+            100% { transform: translateX(-50%) translateY(0); }
         }
 
         .jump-animation {
@@ -284,7 +284,6 @@
         const SPREADSHEET_API_URL = "https://sheetdb.io/api/v1/sf6lawxbra0x6";
 
         let questions = [];
-        // Pasangan asset: Standby pakai PNG, jatuh pakai WebM
         const characterAssets = [
             { normal: 'animate-1.png', fall: 'animate-1-fall.webm' },
             { normal: 'animate-2.png', fall: 'animate-2-fall.webm' },
@@ -338,7 +337,7 @@
             const charEl = document.getElementById("game-character");
             charEl.src = selectedChar.normal; // Load PNG standby
             
-            // Posisi awal di luar jembatan (sebelum menjawab pertanyaan pertama)
+            // Saat baru klik PLAY, karakter diam di kiri jembatan (left: 22px)
             charEl.style.left = "22px";
             charEl.style.bottom = "115px";
 
@@ -381,10 +380,10 @@
 
             wrongAttempts = currentBridgeLevel; 
 
-            // --- SETELAH PERTANYAAN PERTAMA, KARAKTER BERGERAK KE TENGAH JEMBATAN ("35%") ---
+            // Karakter baru berjalan maju ke tengah jembatan (35%) saat soal pertama/berikutnya dimuat
             const charEl = document.getElementById("game-character");
-            charEl.style.left = "35%";     // Posisi pas di tengah jembatan (sesuai kode lamamu)
-            charEl.style.bottom = "135px";  // Naik pas di atas jembatan
+            charEl.style.left = "35%";     
+            charEl.style.bottom = "135px";  
 
             questionText.innerText = `(${currentIndex + 1}/${questions.length}) ${q.question}`;
             scrollOptions.innerHTML = "";
@@ -490,12 +489,12 @@
             const charEl = document.getElementById("game-character");
 
             if (isCorrect) {
-                // --- EFEK SUARA & LOMPAT KECIL SAAT BENAR DI ATAS JEMBATAN ---
+                // Efek suara & lompat gembira saat benar
                 yaySound.currentTime = 0;
                 yaySound.play().catch(e => console.log("Audio play blocked:", e));
 
                 charEl.classList.remove("jump-animation");
-                void charEl.offsetWidth; // Trigger reflow
+                void charEl.offsetWidth; 
                 charEl.classList.add("jump-animation");
 
                 currentIndex++;
@@ -504,7 +503,7 @@
                 statusMsg.innerText = "✨ Correct! Bridge is safe, moving to next question...";
                 setTimeout(() => loadQuestion(), 600);
             } else {
-                // --- EFEK SUARA SAAT SALAH ---
+                // Efek suara & reaksi saat salah
                 sadSound.currentTime = 0;
                 sadSound.play().catch(e => console.log("Audio play blocked:", e));
 
@@ -514,15 +513,15 @@
                 if (wrongAttempts >= 3) {
                     triggerTransition();
 
-                    // Ganti tag <img> ke <video> untuk memutar animasi jatuh WebM (-fall.webm)
+                    // Ubah tag <img> ke <video> untuk memutar animasi jatuh (-fall.webm)
                     const oldChar = document.getElementById("game-character");
                     const videoChar = document.createElement("video");
                     videoChar.id = "game-character";
-                    videoChar.src = selectedChar.fall; // animate-1-fall.webm / 2 / 3
+                    videoChar.src = selectedChar.fall; 
                     videoChar.autoplay = true;
                     videoChar.muted = true;
                     videoChar.playsInline = true;
-                    videoChar.style.cssText = oldChar.style.cssText; // Salin posisi CSS aslinya
+                    videoChar.style.cssText = oldChar.style.cssText; 
 
                     oldChar.replaceWith(videoChar);
                     videoChar.play().catch(e => console.log("Autoplay prevented:", e));
