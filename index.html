@@ -157,6 +157,14 @@
             animation: popIn 0.3s ease-out forwards;
         }
 
+        /* --- FADE OUT PAPAN SOAL & KERTAS OPSI SAAT MENANG --- */
+        #wooden-sign.fade-out,
+        #scroll-options.fade-out {
+            opacity: 0;
+            transition: opacity 0.9s ease;
+            pointer-events: none;
+        }
+
         /* PAPAN SOAL */
         #wooden-sign {
             position: absolute;
@@ -169,16 +177,26 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 10px 35px 5px 35px;
+            padding: 12px 38px 8px 38px;
             text-align: center;
             z-index: 10;
         }
         #question-text {
             color: #38220f;
             font-family: 'Nunito', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             font-weight: 900;
-            line-height: 1.25;
+            line-height: 1.3;
+            letter-spacing: 0.2px;
+            text-align: center;
+            text-wrap: balance;
+            word-break: normal;
+            overflow-wrap: break-word;
+            /* shadow putih tipis supaya huruf tidak tabrakan dengan warna kayu */
+            text-shadow:
+                0 1px 1px rgba(255, 255, 255, 0.75),
+                0 0 3px rgba(255, 255, 255, 0.55),
+                0 0 6px rgba(255, 255, 255, 0.25);
         }
 
         /* KERTAS OPSI */
@@ -217,6 +235,47 @@
             background-color: #dda15e;
             color: #ffffff;
             transform: translateX(3px);
+        }
+
+        /* --- POP UP KEMENANGAN --- */
+        #win-popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 420px;
+            height: 320px;
+            margin: -160px 0 0 -210px;
+            background: url('kertas-opsi.png') no-repeat center center;
+            background-size: contain;
+            padding: 70px 55px 45px 55px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            text-align: center;
+            z-index: 25;
+        }
+        #win-popup .win-title {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #38220f;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.75), 0 0 4px rgba(255,255,255,0.5);
+        }
+        #win-popup .win-text {
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 900;
+            line-height: 1.35;
+            color: #38220f;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.75), 0 0 3px rgba(255,255,255,0.5);
+        }
+        #win-popup .option-btn {
+            width: auto;
+            text-align: center;
+            padding: 8px 22px;
+            font-size: 0.9rem;
         }
 
         #controls {
@@ -273,6 +332,13 @@
             <div id="question-text">Loading questions from SheetDB...</div>
         </div>
         <div id="scroll-options" class="animate-board"></div>
+
+        <!-- Pop up kemenangan -->
+        <div id="win-popup" class="hidden">
+            <div class="win-title">🎉 Congratulations!</div>
+            <div class="win-text">You have passed it and make the citizen cross the river safely!</div>
+            <button class="option-btn" onclick="initGame()">Play Again</button>
+        </div>
     </div>
 
     <div id="controls">
@@ -289,9 +355,9 @@
         let allQuestions = [];   // semua soal dari spreadsheet (diambil sekali saja)
         let questions = [];      // 10 soal yang dipakai di ronde ini
         const characterAssets = [
-            { normal: 'animate-1.png', fall: 'animate-1-fall.webm' },
-            { normal: 'animate-2.png', fall: 'animate-2-fall.webm' },
-            { normal: 'animate-3.png', fall: 'animate-3-fall.webm' }
+            { normal: 'animate-1.png', fall: 'animate-1-fall.webm', win: 'animate-1-win.webm' },
+            { normal: 'animate-2.png', fall: 'animate-2-fall.webm', win: 'animate-2-win.webm' },
+            { normal: 'animate-3.png', fall: 'animate-3-fall.webm', win: 'animate-3-win.webm' }
         ];
         let selectedChar = null; 
         let currentIndex = 0;
@@ -302,15 +368,31 @@
         // --- POSISI STANDBY KARAKTER (pinggir kiri jembatan / depan pohon kelapa) ---
         const STANDBY_LEFT = "150px";   // geser angka ini kalau mau lebih kiri/kanan
         const STANDBY_BOTTOM = "125px"; // geser kalau kakinya kurang pas menapak tanah
+
+        // --- POSISI KARAKTER SAAT MENANG (jalan ke kanan, ujung jembatan sisi seberang) ---
+        const WIN_LEFT = "64%";         // geser kalau mau jalan lebih jauh / lebih dekat
+        const WIN_BOTTOM = "135px";     // samakan dengan posisi bawah karakter di jembatan
+        const WIN_WALK_MS = 2500;       // durasi jalan ke kanan (milidetik)
         
         // --- EFEK AUDIO ---
         const yaySound = new Audio('yeay.mp3');
         const sadSound = new Audio('sedih.mp3');
         const gameOverSound = new Audio('game-over.mp3');
+        const winSound = new Audio('win-win.mp3');
         gameOverSound.preload = "auto";
+        winSound.preload = "auto";
 
-        // --- PRELOAD ASET BERAT (video jembatan & animasi jatuh) ---
-        // File diunduh lebih dulu di belakang layar jadi saat game over langsung main tanpa loading.
+        // --- PENGATUR URUTAN ANIMASI MENANG (dibatalkan kalau restart di tengah jalan) ---
+        let winTimers = [];
+        let gameRunId = 0;
+
+        function clearWinTimers() {
+            winTimers.forEach(t => clearTimeout(t));
+            winTimers = [];
+        }
+
+        // --- PRELOAD ASET BERAT (video jembatan & animasi jatuh/menang) ---
+        // File diunduh lebih dulu di belakang layar jadi saat game over / menang langsung main tanpa loading.
         const preloadedURLs = {};
 
         async function preloadAsset(file) {
@@ -331,8 +413,9 @@
         }
 
         async function preloadGameAssets() {
-            // Urutan prioritas: animasi jatuh karakter yang dipilih dulu, lalu video jembatan
+            // Urutan prioritas: animasi jatuh & menang karakter yang dipilih dulu, lalu video jembatan
             await preloadAsset(selectedChar.fall);
+            await preloadAsset(selectedChar.win);
             await preloadAsset('bridge-2-fix.mp4');
             await preloadAsset('bridge-3.mp4');
             await preloadAsset('bridge-4.mp4');
@@ -404,8 +487,22 @@
         const bridgeImg = document.getElementById("bridge-img");
         const bridgeVideo = document.getElementById("bridge-video");
         const bridgeCanvas = document.getElementById("bridge-canvas");
+        const winPopup = document.getElementById("win-popup");
         const ctx = bridgeCanvas.getContext("2d", { willReadFrequently: true });
         const mainMenu = document.getElementById("main-menu");
+
+        // --- KECILKAN FONT SOAL OTOMATIS KALAU KALIMATNYA PANJANG, supaya tetap rapi di papan ---
+        function fitQuestionText() {
+            const MAX_PX = 15.5;
+            const MIN_PX = 10.5;
+            const MAX_HEIGHT = 84; // tinggi area tulis di papan kayu
+            let size = MAX_PX;
+            questionText.style.fontSize = size + "px";
+            while (questionText.scrollHeight > MAX_HEIGHT && size > MIN_PX) {
+                size -= 0.5;
+                questionText.style.fontSize = size + "px";
+            }
+        }
 
         async function startGame() {
             mainMenu.style.opacity = "0";
@@ -428,16 +525,29 @@
         }
 
         async function initGame() {
+            gameRunId++;
+            clearWinTimers();
+
             statusMsg.innerText = "Fetching questions from SheetDB...";
             currentIndex = 0;
             wrongAttempts = 0;
             currentBridgeLevel = 0; 
 
-            // Hentikan audio game over kalau sedang main (misal klik Try Again / Restart)
+            // Hentikan audio game over / menang kalau sedang main (misal klik Try Again / Restart)
             gameOverSound.pause();
             gameOverSound.currentTime = 0;
+            winSound.pause();
+            winSound.currentTime = 0;
+            winSound.onended = null;
 
-            // Reset elemen karakter ke tag <img> jika sebelumnya berubah jadi <video> karena Game Over
+            // Sembunyikan pop up menang & tampilkan lagi papan soal + kertas opsi
+            winPopup.classList.add("hidden");
+            woodenSign.classList.remove("fade-out");
+            scrollOptions.classList.remove("fade-out");
+            woodenSign.style.pointerEvents = "";
+            scrollOptions.style.pointerEvents = "";
+
+            // Reset elemen karakter ke tag <img> jika sebelumnya berubah jadi <video> karena Game Over / Menang
             let charContainer = document.getElementById("game-character");
             if (charContainer.tagName.toLowerCase() !== 'img') {
                 const newImg = document.createElement('img');
@@ -448,6 +558,7 @@
 
             selectedChar = characterAssets[Math.floor(Math.random() * characterAssets.length)];
             const charEl = document.getElementById("game-character");
+            charEl.classList.remove("jump-animation");
             charEl.src = selectedChar.normal; // Load PNG standby
 
             // Taruh di luar layar tanpa animasi (supaya tidak "meluncur mundur")
@@ -459,7 +570,7 @@
             stopGreenScreenVideo();
             updateBridgeDisplay();
             walkToStandby(); // karakter jalan dari kiri ke pinggir jembatan
-            preloadGameAssets(); // unduh video jembatan & animasi jatuh di belakang layar
+            preloadGameAssets(); // unduh video jembatan & animasi jatuh/menang di belakang layar
 
             try {
                 // Ambil data dari SheetDB hanya sekali (restart tidak fetch ulang)
@@ -493,10 +604,7 @@
 
         function loadQuestion() {
             if (currentIndex >= questions.length) {
-                triggerTransition();
-                questionText.innerText = "🎉 Amazing! You successfully answered all questions!";
-                scrollOptions.innerHTML = `<button class="option-btn" onclick="initGame()">Play Again</button>`;
-                statusMsg.innerText = "Status: Completed!";
+                startWinSequence(); // semua soal selesai dijawab -> urutan kemenangan
                 return;
             }
 
@@ -506,6 +614,7 @@
             wrongAttempts = currentBridgeLevel; 
 
             questionText.innerText = `(${currentIndex + 1}/${questions.length}) ${q.question}`;
+            fitQuestionText();
             scrollOptions.innerHTML = "";
 
             q.options.forEach(opt => {
@@ -515,6 +624,80 @@
                 btn.onclick = () => checkAnswer(opt, q.answer);
                 scrollOptions.appendChild(btn);
             });
+        }
+
+        // --- URUTAN KEMENANGAN ---
+        // 1) papan soal + kertas opsi fade out
+        // 2) karakter jalan ke kanan
+        // 3) ganti ke animasi -win (.webm) + sound win-win.mp3
+        // 4) setelah sound selesai -> pop up "Congratulations!"
+        function startWinSequence() {
+            const runId = gameRunId;
+            const isStale = () => runId !== gameRunId;
+
+            statusMsg.innerText = "Status: You made it across!";
+
+            // 1) Fade out papan soal & kertas opsi (animasi popIn dilepas dulu supaya opacity bisa turun)
+            woodenSign.classList.remove("animate-board");
+            scrollOptions.classList.remove("animate-board");
+            woodenSign.style.pointerEvents = "none";
+            scrollOptions.style.pointerEvents = "none";
+            void woodenSign.offsetWidth;
+            void scrollOptions.offsetWidth;
+            woodenSign.classList.add("fade-out");
+            scrollOptions.classList.add("fade-out");
+
+            // 2) Karakter jalan ke kanan
+            const charEl = document.getElementById("game-character");
+            charEl.classList.remove("jump-animation");
+            charEl.style.transition = `left ${WIN_WALK_MS}ms linear, bottom 0.4s ease`;
+            charEl.style.bottom = WIN_BOTTOM;
+            charEl.style.left = WIN_LEFT;
+
+            // 3) Sampai di titik tujuan -> ganti ke animasi menang
+            winTimers.push(setTimeout(() => {
+                if (isStale()) return;
+
+                const oldChar = document.getElementById("game-character");
+                const winVideo = document.createElement("video");
+                winVideo.id = "game-character";
+                winVideo.preload = "auto";
+                winVideo.src = getAsset(selectedChar.win);
+                winVideo.muted = true;
+                winVideo.playsInline = true;
+                winVideo.style.cssText = oldChar.style.cssText;
+                winVideo.style.transition = "none";
+                winVideo.style.left = WIN_LEFT;
+                winVideo.style.bottom = WIN_BOTTOM;
+
+                oldChar.replaceWith(winVideo);
+                winVideo.play().catch(e => console.log("Autoplay prevented:", e));
+
+                // Sound menang diputar bersamaan dengan animasi menang
+                let popupShown = false;
+                const showPopup = () => {
+                    if (popupShown || isStale()) return;
+                    popupShown = true;
+                    showWinPopup();
+                };
+
+                winSound.currentTime = 0;
+                winSound.onended = showPopup;
+                winSound.play().catch(e => {
+                    console.log("Audio play blocked:", e);
+                    winTimers.push(setTimeout(showPopup, 2500)); // kalau audio diblokir, tetap lanjut
+                });
+                // Jaring pengaman kalau event 'ended' tidak pernah terpanggil (file audio hilang dsb.)
+                winTimers.push(setTimeout(showPopup, 15000));
+            }, WIN_WALK_MS + 100));
+        }
+
+        function showWinPopup() {
+            winPopup.classList.remove("hidden");
+            winPopup.classList.remove("animate-board");
+            void winPopup.offsetWidth;
+            winPopup.classList.add("animate-board");
+            statusMsg.innerText = "Status: Completed!";
         }
 
         function triggerTransition() {
@@ -658,6 +841,7 @@
                     gameOverSound.play().catch(e => console.log("Audio play blocked:", e));
 
                     questionText.innerText = "💥 Oh no! The bridge collapsed due to too many mistakes!";
+                    fitQuestionText();
                     scrollOptions.innerHTML = `<button class="option-btn" onclick="initGame()">Try Again</button>`;
                     statusMsg.innerText = "Status: Game Over!";
                 } else {
