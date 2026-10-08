@@ -107,22 +107,21 @@
             transform: scale(1.08);
         }
 
-        /* --- POSISI JEMBATAN --- */
+        /* --- POSISI KUNCI MUTLAK: DIJAMIN TIDAK BERGESER ATAU NAIK --- */
         #bridge-img, #bridge-canvas {
             position: absolute;
-            bottom: 75px; 
-            left: 35px;     
+            bottom: 75px;  /* Posisi bawah dikunci tetap */
+            left: 35%;     /* Posisi kiri dikunci tetap */
             transform: translateX(-50%);
             width: 420px;
             z-index: 5;
         }
-        
-        /* --- POSISI KARAKTER (PNG / WEBM) --- */
+        /* --- POSISI KARAKTER (BERDIRI DI ATAS JEMBATAN) --- */
         #game-character {
             position: absolute;
-            bottom: 110px;  
-            left: 35%;      
-            width: 130px;   
+            bottom: 115px;  
+            left: 20px;     
+            width: 90px;  
             height: auto;
             z-index: 6;    
             transform: translateX(-50%);
@@ -255,8 +254,8 @@
         <video id="bridge-video" muted playsinline></video>
         <canvas id="bridge-canvas" class="hidden"></canvas>
         
-        <!-- Karakter Interaktif (Kembali pakai IMG agar PNG & WebM bisa jalan) -->
-        <img id="game-character" src="" alt="Character">
+        <!-- Karakter Interaktif diubah jadi <video> agar bisa memutar file -fall.webm saat jatuh -->
+        <video id="game-character" autoplay muted playsinline></video>
 
         <!-- Papan Soal & Opsi di Kanan -->
         <div id="wooden-sign" class="animate-board">
@@ -274,12 +273,13 @@
         const SPREADSHEET_API_URL = "https://sheetdb.io/api/v1/sf6lawxbra0x6";
 
         let questions = [];
+        // Struktur data dipasangkan agar tahu file PNG mana yang harus berubah ke WebM mana
         const characterAssets = [
             { normal: 'animate-1.png', fall: 'animate-1-fall.webm' },
             { normal: 'animate-2.png', fall: 'animate-2-fall.webm' },
             { normal: 'animate-3.png', fall: 'animate-3-fall.webm' }
         ];
-        let selectedChar = null; 
+        let selectedChar = null; // Menyimpan objek karakter yang terpilih di game ini
         let currentIndex = 0;
         let wrongAttempts = 0; 
         let currentBridgeLevel = 0;
@@ -309,12 +309,14 @@
             currentIndex = 0;
             wrongAttempts = 0;
             currentBridgeLevel = 0; 
-            
+
+            // Pilih random pasangan karakter
             selectedChar = characterAssets[Math.floor(Math.random() * characterAssets.length)];
             const charEl = document.getElementById("game-character");
-            charEl.src = selectedChar.normal; // Memuat PNG standby
-            charEl.style.left = "35%";     
-            charEl.style.bottom = "110px";
+            charEl.src = selectedChar.normal; // Memuat PNG (animate-1.png, animate-2.png, atau animate-3.png)
+            charEl.loop = false;
+            charEl.style.left = "22%";
+            charEl.style.bottom = "115px";
 
             stopGreenScreenVideo();
             updateBridgeDisplay();
@@ -400,17 +402,18 @@
 
                 let videoFile = '';
                 
+                // --- ATUR POSISI BOTTOM BERDASARKAN LEVEL JEMBATAN ---
                 if (wrongAttempts === 1) {
                     videoFile = 'bridge-2-fix.mp4';
-                    bridgeCanvas.style.bottom = "75px"; 
+                    bridgeCanvas.style.bottom = "75px"; // Posisi standar sejajar Bridge 1
                 }
                 else if (wrongAttempts === 2) {
                     videoFile = 'bridge-3.mp4';
-                    bridgeCanvas.style.bottom = "75px"; 
+                    bridgeCanvas.style.bottom = "75px"; // Posisi standar sejajar Bridge 1
                 }
                 else {
                     videoFile = 'bridge-4.mp4';
-                    bridgeCanvas.style.bottom = "50px"; 
+                    bridgeCanvas.style.bottom = "50px"; // <-- TURUNKAN INI! Angka makin kecil makin ke bawah
                 }
 
                 bridgeVideo.src = videoFile;
@@ -456,9 +459,9 @@
 
         function checkAnswer(selected, correct) {
             const isCorrect = (selected.trim().toLowerCase() === correct.toLowerCase());
-            
             const charEl = document.getElementById("game-character");
-            charEl.style.bottom = "135px"; 
+            charEl.style.left = "35%";
+            charEl.style.bottom = "135px"; // Naik sedikit agar pas berdiri di atas papan jembatan
 
             if (isCorrect) {
                 currentIndex++;
@@ -473,8 +476,9 @@
                 if (wrongAttempts >= 3) {
                     triggerTransition();
 
-                    // Ganti ke animasi jatuh WebM (-fall.webm)
-                    charEl.src = selectedChar.fall; 
+                    // --- UBAH KE ANIMASI JATUH WEBM SESUAI KARAKTER YANG AKTIF ---
+                    charEl.src = selectedChar.fall; // Akan otomatis jadi animate-1-fall.webm / 2 / 3
+                    charEl.play().catch(e => console.log("Autoplay prevented:", e));
 
                     questionText.innerText = "💥 Oh no! The bridge collapsed due to too many mistakes!";
                     scrollOptions.innerHTML = `<button class="option-btn" onclick="initGame()">Try Again</button>`;
