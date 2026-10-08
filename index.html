@@ -504,7 +504,26 @@
             }
         }
 
+        // --- BUKA KUNCI AUDIO: diputar sekali (muted) saat klik PLAY supaya browser
+        // mengizinkan sound diputar otomatis nanti (misal win-win.mp3 saat menang) ---
+        function unlockAudio() {
+            [winSound, yaySound, sadSound, gameOverSound].forEach(a => {
+                a.muted = true;
+                const p = a.play();
+                if (p && p.then) {
+                    p.then(() => {
+                        a.pause();
+                        a.currentTime = 0;
+                        a.muted = false;
+                    }).catch(() => { a.muted = false; });
+                } else {
+                    a.muted = false;
+                }
+            });
+        }
+
         async function startGame() {
+            unlockAudio();
             mainMenu.style.opacity = "0";
             setTimeout(() => {
                 mainMenu.style.display = "none";
@@ -684,7 +703,8 @@
                 winSound.currentTime = 0;
                 winSound.onended = showPopup;
                 winSound.play().catch(e => {
-                    console.log("Audio play blocked:", e);
+                    // Cek console: "NotAllowedError" = diblokir browser, "NotSupportedError" = file tidak ketemu/rusak
+                    console.log("win-win.mp3 gagal diputar:", e.name, e.message);
                     winTimers.push(setTimeout(showPopup, 2500)); // kalau audio diblokir, tetap lanjut
                 });
                 // Jaring pengaman kalau event 'ended' tidak pernah terpanggil (file audio hilang dsb.)
