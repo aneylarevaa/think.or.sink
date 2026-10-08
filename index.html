@@ -129,6 +129,17 @@
             transition: left 0.4s ease, bottom 0.4s ease;
         }
 
+        /* --- ANIMASI LOMPAT KECIL SAAT JAWABAN BENAR --- */
+        @keyframes charJump {
+            0% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-22px); } /* Bergerak ke atas sedikit */
+            100% { transform: translateX(-50%) translateY(0); } /* Kembali ke posisi semula */
+        }
+
+        .jump-animation {
+            animation: charJump 0.4s ease-in-out;
+        }
+
         #bridge-video {
             display: none;
         }
@@ -285,6 +296,10 @@
         let currentBridgeLevel = 0;
         let videoAnimationId = null;
         
+        // --- EFEK AUDIO ---
+        const yaySound = new Audio('yeay.mp3');
+        const sadSound = new Audio('sedih.mp3');
+
         const woodenSign = document.getElementById("wooden-sign");
         const questionText = document.getElementById("question-text");
         const scrollOptions = document.getElementById("scroll-options");
@@ -322,7 +337,7 @@
             selectedChar = characterAssets[Math.floor(Math.random() * characterAssets.length)];
             const charEl = document.getElementById("game-character");
             charEl.src = selectedChar.normal; // Load PNG standby
-            charEl.style.left = "22px";
+            charEl.style.left = "22px";       // Posisi awal di luar jembatan
             charEl.style.bottom = "115px";
 
             stopGreenScreenVideo();
@@ -363,7 +378,11 @@
             triggerTransition();
 
             wrongAttempts = currentBridgeLevel; 
-            document.getElementById("game-character").style.left = "15%";
+            
+            // --- SETELAH SOAL PERTAMA / MULAI MENJAWAB, KARAKTER NAIK KE ATAS JEMBATAN ---
+            const charEl = document.getElementById("game-character");
+            charEl.style.left = "15px";
+            charEl.style.bottom = "135px";
 
             questionText.innerText = `(${currentIndex + 1}/${questions.length}) ${q.question}`;
             scrollOptions.innerHTML = "";
@@ -467,23 +486,33 @@
         function checkAnswer(selected, correct) {
             const isCorrect = (selected.trim().toLowerCase() === correct.toLowerCase());
             const charEl = document.getElementById("game-character");
-            charEl.style.left = "35%";
-            charEl.style.bottom = "135px"; 
 
             if (isCorrect) {
+                // --- EFEK SUARA & LOMPAT KECIL SAAT BENAR ---
+                yaySound.currentTime = 0;
+                yaySound.play().catch(e => console.log("Audio play blocked:", e));
+
+                charEl.classList.remove("jump-animation");
+                void charEl.offsetWidth; // Trigger reflow untuk reset animasi
+                charEl.classList.add("jump-animation");
+
                 currentIndex++;
                 currentBridgeLevel = wrongAttempts; 
                 
                 statusMsg.innerText = "✨ Correct! Bridge is safe, moving to next question...";
-                setTimeout(() => loadQuestion(), 500);
+                setTimeout(() => loadQuestion(), 600);
             } else {
+                // --- EFEK SUARA SAAT SALAH ---
+                sadSound.currentTime = 0;
+                sadSound.play().catch(e => console.log("Audio play blocked:", e));
+
                 wrongAttempts++;
                 updateBridgeDisplay();
 
                 if (wrongAttempts >= 3) {
                     triggerTransition();
 
-                    // Ganti tag <img> ke <video> secara otomatis agar bisa mutar file .webm jatuh
+                    // Ganti tag <img> ke <video> secara otomatis agar bisa memutar file .webm jatuh
                     const oldChar = document.getElementById("game-character");
                     const videoChar = document.createElement("video");
                     videoChar.id = "game-character";
