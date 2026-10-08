@@ -382,6 +382,56 @@
         gameOverSound.preload = "auto";
         winSound.preload = "auto";
 
+        // --- BACKSOUND (looping, volume kecil, otomatis mute saat efek suara lain diputar) ---
+        const BGM_VOLUME = 0.2;          // 0.0 - 1.0, kecilkan kalau masih kekencengan
+        const backsound = new Audio('backsound.mp4');
+        backsound.loop = true;
+        backsound.volume = BGM_VOLUME;
+        backsound.preload = "auto";
+
+        let bgmFadeTimer = null;
+        function fadeBacksound(target, ms = 250) {
+            clearInterval(bgmFadeTimer);
+            const steps = 10;
+            const start = backsound.volume;
+            const diff = target - start;
+            let i = 0;
+            bgmFadeTimer = setInterval(() => {
+                i++;
+                backsound.volume = Math.max(0, Math.min(1, start + diff * (i / steps)));
+                if (i >= steps) clearInterval(bgmFadeTimer);
+            }, ms / steps);
+        }
+
+        // Daftar efek suara yang sedang berbunyi. Selama ada yang berbunyi -> backsound mute.
+        const sfxPlaying = new Set();
+        let duckListenersAttached = false;
+
+        function attachDuckListeners() {
+            if (duckListenersAttached) return;
+            duckListenersAttached = true;
+
+            [yaySound, sadSound, gameOverSound, winSound].forEach(a => {
+                a.addEventListener('play', () => {
+                    if (a.muted) return; // abaikan pemanasan audio (unlock) yang diam-diam
+                    sfxPlaying.add(a);
+                    fadeBacksound(0, 150);
+                });
+                const stopped = () => {
+                    if (a.muted) return;
+                    sfxPlaying.delete(a);
+                    if (sfxPlaying.size === 0) fadeBacksound(BGM_VOLUME, 600);
+                };
+                a.addEventListener('ended', stopped);
+                a.addEventListener('pause', stopped);
+                a.addEventListener('error', stopped);
+            });
+        }
+
+        function startBacksound() {
+            backsound.play().catch(e => console.log("backsound.mp4 gagal diputar:", e.name, e.message));
+        }
+
         // --- PENGATUR URUTAN ANIMASI MENANG (dibatalkan kalau restart di tengah jalan) ---
         let winTimers = [];
         let gameRunId = 0;
@@ -524,6 +574,8 @@
 
         async function startGame() {
             unlockAudio();
+            startBacksound();
+            setTimeout(attachDuckListeners, 500); // pasang setelah pemanasan audio selesai
             mainMenu.style.opacity = "0";
             setTimeout(() => {
                 mainMenu.style.display = "none";
